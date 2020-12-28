@@ -1,0 +1,73 @@
+table#java th {
+	width:120px;
+}
+table#java td.source textarea {
+	height: 80px;
+}
+table#java td.contents textarea {
+	height: 250px;
+}
+table#java td.results textarea
+{
+	height: 150px;
+	background-color:#F3F3F3;
+}
+
+table#java th.encrypted,
+table#java td.encrypted,
+table#java th.autosave,
+table#java td.autosave,
+form.delete button
+{
+	display:none;
+}
+
+table#java th.encrypted.show,
+table#java td.encrypted.show,
+table#java th.autosave.show,
+table#java td.autosave.show
+{
+	display:table-cell;
+}
+td.execute {
+	width:60px;
+}
+
+@media only screen and (max-width: 600px) {
+	table#java th.title,
+	table#java th.source
+	{
+		display:none;
+	}
+	table#java td.title {
+		width:100%;
+		background-color:#f3f3f3;
+	}
+	table#java td,
+	table#java th
+	{
+		display:block;
+	}
+	table#java th.marked,
+	table#java th.history,
+	table#java th.encrypted.show,
+	table#java th.autosave.show
+	{
+		width:130px;
+		display:block;
+		float:left;
+		clear:both;
+	}
+	table#java td.marked,
+	table#java td.history,
+	table#java td.encrypted.show,
+	table#java td.autosave.show
+	{
+		display:block;
+	}
+	table#java td.encrypted.show,
+	table#java td.autosave.show
+	{
+		display:block;
+	}
+}

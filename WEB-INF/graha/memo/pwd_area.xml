@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+			<bottom><![CDATA[
+<div id="pwd_area">
+	<fieldset class="pwd">
+		<legend>암호 입력</legend>
+		<div class="pwd001">
+			<label for="pwd001" id="label_pwd001" class="pwd">첫 번째 패스워드</label>
+			<span>
+				<input type="text" class="pwd" name="pwd001" id="pwd001" maxlength="25" value="" title="첫 번째 패스워드" />
+			</span>
+		</div>
+		<div class="pwd002">
+			<label for="pwd002" id="label_pwd002" class="pwd">두 번째 패스워드</label>
+			<span>
+				<input type="text" class="pwd" name="pwd002" id="pwd002" maxlength="25" value="" title="두 번째 패스워드" />
+			</span>
+		</div>
+		<input type="button" value="확인" class="confirm" />
+		<div class="showpwd">
+			<span>
+				<input type="checkbox" name="showpwd" id="showpwd" />
+				<label for="showpwd" id="label_showpwd">암호 숨기기</label>
+			</span>
+		</div>
+		<input type="button" value="취소" class="cancle" />
+		<div class="alert">
+			!!!2개의 패스워드를 모두 입력해주세요!!!
+		</div>
+	</fieldset>
+</div>
+			]]></bottom>

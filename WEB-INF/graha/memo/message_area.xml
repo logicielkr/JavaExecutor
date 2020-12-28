@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+			<bottom><![CDATA[
+<div id="message_area">
+	<div class="message">
+		<div class="confirm">
+		</div>
+		<ul class="alert">
+		</ul>
+		<div class="btn">
+			<input type="button" value="확인"  class="confirm" />
+			<input type="button" value="취소"  class="cancle" />
+		</div>
+	</div>
+</div>
+			]]></bottom>

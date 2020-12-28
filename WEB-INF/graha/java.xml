@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<querys>
+	<header extends="_base.xml">
+		<jndi name="jdbc/graha_sample" />
+		<prop name="logined_user" value="guest" />
+		<prop name="logined_user" value="${session.user_id}" cond="${session.user_id} isNotEmpty" />
+		<prop name="logined_user" value="${header.remote_user}" cond="${header.remote_user} isNotEmpty" />
+		<style>
+button i {
+	vertical-align: middle;
+}
+		</style>
+	</header>
+	<query id="list" funcType="list" label="Java 실행기">
+		<header>
+			<style src="https://fonts.googleapis.com/icon?family=Material+Icons" />
+			<style src="../../css/java.list.css" />
+			<style src="../../css/memo.pwd_area.css" />
+			<style src="../../css/memo.message_area.css" />
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" />
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/sjcl/1.0.8/sjcl.js" />
+			<script src="https://cdn.jsdelivr.net/npm/sjcl@1.0.8/core/codecBytes.js" />
+			<script src="https://cdn.jsdelivr.net/npm/base64-js@1.3.1/base64js.min.js" />
+			<script><![CDATA[
+var isEncrypted = false;
+<xsl:if test="/document/rows[@id='java']/row/encrypted = 't'">
+isEncrypted = true;
+</xsl:if>
+			]]></script>
+			<script src="../../js/memo.pwd_area.js" override="true" />
+			<script src="../../js/memo.message_area.js" override="true" />
+			<script src="../../js/java.list.js" />
+			<xi:include href="memo/pwd_area.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+			<xi:include href="memo/message_area.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+		</header>
+		<commands>
+			<command name="java">
+				<sql pageSize="15" pageGroupSize="10">
+					select
+						java_id
+						, case when encrypted = true then '암호화된 게시물' else title end as title
+						, case when encrypted = true then title else '' end as encrypted_title
+						, to_char(update_date, 'YYYY-MM-DD HH24:MI:SS') as update_date
+						, encrypted
+					from java
+					where insert_id = ?
+					and parent_id is null
+<tile cond="${param.search} isNotEmpty">
+					and (title like '%' || ? || '%' or contents like '%' || ? || '%')
+</tile>
+					order by java_id desc
+				</sql>
+				<sql_cnt>
+					select count(*) from java where insert_id = ? and parent_id is null
+<tile cond="${param.search} isNotEmpty">
+					and (title like '%' || ? || '%' or contents like '%' || ? || '%')
+</tile>
+				</sql_cnt>
+				<params>
+					<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+					<param name="search" datatype="varchar" value="param.search" default="%" cond="${param.search} isNotEmpty" />
+					<param name="search" datatype="varchar" value="param.search" default="%" cond="${param.search} isNotEmpty" />
+				</params>
+			</command>
+		</commands>
+		<layout>
+			<top>
+				<center>
+					<search label="검색" path="/java/list">
+						<params>
+							<param name="search" value="search" />
+						</params>
+					</search>
+				</center>
+				<right>
+					<link name="insert" label="추가" path="/java/insert" icon="add" class="material-icons md-18 add" />
+				</right>
+			</top>
+			<middle>
+				<tab name="java">
+					<column label="제목" name="title">
+						<link path="/java/detail">
+							<param name="java_id" type="query" value="java_id" />
+						</link>
+					</column>
+					<column label="마지막수정일시" name="update_date" />
+					<column label="암호화된 제목" name="encrypted_title" />
+				</tab>
+			</middle>
+			<bottom>
+			<center>page</center>
+			</bottom>
+		</layout>
+	</query>
+	<query id="insert" funcType="insert" label="Java 실행기">
+		<header>
+			<style src="../../css/java.insert.css" />
+			<style src="../../css/memo.pwd_area.css" />
+			<style src="../../css/memo.message_area.css" />
+			<style src="https://fonts.googleapis.com/icon?family=Material+Icons" />
+			<style><![CDATA[
+<xsl:if test="/document/rows[@id='java']/row/encrypted = 't'">
+div#pwd_area {
+	display:block;
+}
+</xsl:if>
+			]]></style>
+			<script>
+var global = global || window;
+			</script>
+			<script><![CDATA[
+var isEncrypted = false;
+<xsl:if test="/document/rows[@id='java']/row/encrypted = 't'">
+isEncrypted = true;
+</xsl:if>
+
+var javaId = null;
+<xsl:if test="/document/params[@for='data']/java_id">
+javaId = <xsl:value-of select="/document/params[@for='data']/java_id" />;
+</xsl:if>
+
+var javaHistoryId = null;
+<xsl:if test="/document/params[@for='data']/java_history_id">
+javaHistoryId = <xsl:value-of select="/document/params[@for='data']/java_history_id" />;
+</xsl:if>
+			]]></script>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" />
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/sjcl/1.0.8/sjcl.js" />
+			<script src="https://cdn.jsdelivr.net/npm/base64-js@1.3.1/base64js.min.js" />
+			<script src="https://cdn.jsdelivr.net/npm/sjcl@1.0.8/core/codecBytes.js" />
+			<script src="../../js/java.insert.js" name="check_submit" override="true" />
+			<script src="../../js/java.insert.exec.js" />
+			<script src="../../js/memo.pwd_area.js" override="true" />
+			<script src="../../js/memo.message_area.js" override="true" />
+			<xi:include href="memo/pwd_area.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+			<xi:include href="memo/message_area.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+			<prop name="savehistory" value="y" cond="${param.history} isEmpty" />
+			<prop name="savehistory" value="${prop.savehistory}y" cond="${param.java_id} isNotEmpty" />
+		</header>
+		<processors>
+			<processor type="query" after="true" method="POST" cond="${param.java_history_id} isNotEmpty">
+				<sql>
+					delete from java_history where java_history_id = ? and insert_id = ?
+				</sql>
+				<params>
+					<param name="java_history_id" datatype="int" value="param.java_history_id" default="-1" />
+					<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+				</params>
+			</processor>
+			<processor type="query" before="true" method="POST" cond="${prop.savehistory} equals 'yy'">
+				<sql>
+					insert into java_history (
+						java_history_id,
+						title,
+						source,
+						contents,
+						results,
+						encrypted,
+						java_id,
+						autosave,
+						parent_id,
+						insert_date,
+						insert_id,
+						insert_ip,
+						update_date,
+						update_id,
+						update_ip
+					)
+					select ? as java_history_id,
+						title,
+						source,
+						contents,
+						results,
+						encrypted,
+						java_id,
+						false as autosave,
+						parent_id,
+						insert_date,
+						insert_id,
+						insert_ip,
+						update_date,
+						update_id,
+						update_ip
+					from java where java_id = ?
+					and (md5(trim(title)) != md5(trim(?)) or md5(trim(source)) != md5(trim(?)) or md5(trim(contents)) != md5(trim(?)))
+					and insert_id = ?
+				</sql>
+				<params>
+					<param name="java_history_id" datatype="int" value="sequence.nextval('java_history$java_history_id')" default="-1" />
+					<param name="java_id" datatype="int" value="param.java_id" default="-1" />
+					<param name="title" datatype="varchar" value="param.title" />
+					<param name="source" datatype="varchar" value="param.source" />
+					<param name="contents" datatype="varchar" value="param.contents" />
+					<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+				</params>
+			</processor>
+			<processor type="query" before="true" method="GET" cond="${param.java_id} isNotEmpty">
+				<sql>
+					delete from java_history where java_id = ? and insert_id = ?
+					and exists (
+						select * from java where java.java_id = ? and java.insert_id = ?
+						and md5(java.title) = md5(java_history.title)
+						and md5(java.source) = md5(java_history.source)
+						and md5(java.contents) = md5(java_history.contents)
+					)
+				</sql>
+				<params>
+					<param name="java_id" datatype="int" value="param.java_id" default="-1" />
+					<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+					<param name="java_id" datatype="int" value="param.java_id" default="-1" />
+					<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+				</params>
+			</processor>
+		</processors>
+		<validation method="POST">
+			<param name="title" not-null="true" msg="제목은 필수 항목입니다!" />
+		</validation>
+		<tables>
+			<table tableName="java" name="java" label="Java 실행기">
+				<column name="java_id" value="param.java_id" datatype="int" primary="true" insert="sequence.nextval('java$java_id')" />
+				<column name="title" value="param.title" datatype="varchar" />
+				<column name="source" value="param.source" datatype="varchar" />
+				<column name="contents" value="param.contents" datatype="varchar" />
+				<column name="results" value="param.results" datatype="varchar" />
+				<column name="encrypted" value="param.encrypted" datatype="boolean" />
+				<column name="parent_id" value="param.parent_id" datatype="int" />
+				<column name="insert_date" only="insert" value="sql.now()" datatype="timestamp" />
+				<column name="insert_id" only="insert" value="prop.logined_user" datatype="varchar" />
+				<column name="insert_ip" only="insert" value="header.remote_addr" datatype="varchar" />
+				<column name="update_date" value="sql.now()" datatype="timestamp" />
+				<column name="update_id" value="prop.logined_user" datatype="varchar" />
+				<column name="update_ip" value="header.remote_addr" datatype="varchar" />
+				<where>
+					<sql>
+						insert_id = ?
+					</sql>
+					<params>
+						<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+					</params>
+				</where>
+			</table>
+		</tables>
+		<layout msg="변경사항을 저장하시겠습니까?">
+			<top>
+				<left>
+					<link name="list" label="목록" path="/java/list" icon="list" class="material-icons md-18 list" />
+				</left>
+				<center />
+				<right>
+					<link name="save" label="저장" path="/java/insert" method="post" type="submit" full="true" icon="save" class="material-icons md-18 save">
+						<params>
+							<param name="java_id" type="query" value="java_id" />
+							<param name="parent_id" value="parent_id" />
+							<param name="java_history_id" value="java_history_id" />
+						</params>
+					</link>
+				</right>
+			</top>
+			<middle>
+				<tab name="java" label="Java 실행기">
+					<row>
+						<column label="제목" name="title" value="title" />
+						<column label="실행" name="execute" value="execute" type="button" islabel="false" />
+					</row>
+					<row>
+						<column label="Import 패키지" name="source" value="source" type="textarea" colspan="2" />
+					</row>
+					<row>
+						<column label="내용" name="contents" value="contents" type="textarea" colspan="3" islabel="false" />
+					</row>
+					<row>
+						<column label="실행결과" name="results" value="results" type="textarea" colspan="3" islabel="false" />
+					</row>
+					<row>
+						<column label="이력저장안함" name="history" value="history" type="checkbox" val="t" colspan="3" />
+					</row>
+					<row>
+						<column label="암호화" name="encrypted" value="encrypted" type="checkbox" disabled="disabled" val="t"  colspan="2" />
+					</row>
+					<row>
+						<column label="자동저장" name="autosave" value="autosave" type="checkbox" disabled="disabled" val="t"  colspan="2" />
+					</row>
+				</tab>
+			</middle>
+			<bottom>
+				<left>
+					<link label="삭제" path="/java/deleteAutoSave" method="post" type="submit" msg="자동저장된 게시물을 삭제하시겠습니까?" name="delete" icon="delete" class="material-icons md-18 delete">
+						<params>
+							<param name="java_history_id" value="java_history_id" />
+						</params>
+					</link>
+				</left>
+			</bottom>
+		</layout>
+		<redirect path="/java/detail" cond="${param.parent_id} isEmpty">
+			<param name="java_id" type="query" value="java_id" />
+		</redirect>
+		<redirect path="/java/detail" cond="${param.parent_id} isNotEmpty">
+			 <param name="java_id" type="query" value="java_id" />
+			 <param name="parent_id" type="query" value="parent_id" />
+		</redirect>
+	</query>
+	<query id="autosave" funcType="insert" label="자동저장" auth="${header.method} equals 'POST'">
+		<header>
+		</header>
+		<tables>
+			<table tableName="java_history" name="java_history" label="Java 실행기 이력관리">
+				<column name="java_history_id" value="param.java_history_id" datatype="int" primary="true" insert="sequence.nextval('java_history$java_history_id')" />
+				<column name="title" value="param.title" datatype="varchar" />
+				<column name="source" value="param.source" datatype="varchar" />
+				<column name="contents" value="param.contents" datatype="varchar" />
+				<column name="encrypted" value="param.encrypted" datatype="boolean" />
+				<column name="results" value="param.results" datatype="varchar" />
+				<column name="java_id" value="param.java_id" datatype="int" />
+				<column name="autosave" value="param.autosave" datatype="boolean" />
+				<column name="parent_id" value="param.parent_id" datatype="int" />
+				<column name="insert_date" only="insert" value="sql.now()" datatype="timestamp" />
+				<column name="insert_id" only="insert" value="prop.logined_user" datatype="varchar" />
+				<column name="insert_ip" only="insert" value="header.remote_addr" datatype="varchar" />
+				<column name="update_date" value="sql.now()" datatype="timestamp" />
+				<column name="update_id" value="prop.logined_user" datatype="varchar" />
+				<column name="update_ip" value="header.remote_addr" datatype="varchar" />
+			</table>
+		</tables>
+		<layout msg="변경사항을 저장하시겠습니까?">
+			<top>
+			</top>
+			<middle>
+				<tab name="java_history" label="Java 실행기 이력관리">
+					<row>
+						<column label="제목" name="title" value="title" />
+					</row>
+					<row>
+						<column label="Import 패키지" name="source" value="source" type="textarea" />
+					</row>
+					<row>
+						<column label="내용" name="contents" value="contents" type="textarea" />
+					</row>
+					<row>
+						<column label="실행결과" name="results" value="results" type="textarea" />
+					</row>
+					<row>
+						<column label="암호화" name="encrypted" value="encrypted" type="checkbox" val="t" />
+					</row>
+					<row>
+						<column label="Java ID" name="java_id" value="java_id" />
+					</row>
+					<row>
+						<column label="자동저장" name="autosave" value="autosave" type="checkbox" val="t" />
+					</row>
+				</tab>
+			</middle>
+			<bottom>
+			</bottom>
+		</layout>
+		<redirect path="/java/list" />
+	</query>
+	<query id="detail" funcType="detail" label="Java 실행기(${/document/rows/row/title})">
+		<header>
+			<style src="https://fonts.googleapis.com/icon?family=Material+Icons" />
+			<style src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css" />
+			<style src="../../css/java.detail.css" />
+			<style src="../../css/memo.pwd_area.css" />
+			<style src="../../css/memo.message_area.css" />
+			<style><![CDATA[
+<xsl:if test="/document/rows[@id='java']/row/encrypted = 't'">
+div#pwd_area {
+	display:block;
+}
+</xsl:if>
+<xsl:if test="not(/document/rows[@id='java_history']/row)">
+table#java_history {
+	display:none;
+}
+</xsl:if>
+<xsl:choose>
+<xsl:when test="/document/params[@for='data']/parent_id">
+div.bottom div.right form.insert button,
+div.top div.left form.list button,
+table#java_child
+{
+	display:none;
+}
+</xsl:when>
+<xsl:otherwise>
+div.top div.left form.detail button {
+	display:none;
+}
+</xsl:otherwise>
+</xsl:choose>
+			]]></style>
+			<script><![CDATA[
+var isMarked = true;
+var isEncrypted = false;
+<xsl:if test="/document/rows[@id='java']/row/encrypted = 't'">
+isEncrypted = true;
+</xsl:if>
+var isChildEncrypted = false;
+<xsl:if test="/document/rows[@id='java_child']/row/encrypted = 't'">
+isChildEncrypted = true;
+</xsl:if>
+var isHistoryEncrypted = false;
+<xsl:if test="/document/rows[@id='java_history']/row/encrypted = 't'">
+isHistoryEncrypted = true;
+</xsl:if>
+			]]></script>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" />
+			<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" />
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" />
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.7.0/highlightjs-line-numbers.min.js" />
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/sjcl/1.0.8/sjcl.js" />
+			<script src="https://cdn.jsdelivr.net/npm/base64-js@1.3.1/base64js.min.js" />
+			<script src="https://cdn.jsdelivr.net/npm/sjcl@1.0.8/core/codecBytes.js" />
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/4.0.2/diff.min.js" />
+			<script src="../../js/java.detail.js"  name="check_submit" override="true" />
+			<script src="../../js/memo.message_area.js" override="true" />
+			<script src="../../js/memo.pwd_area.js" override="true" />
+			<xi:include href="memo/pwd_area.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+			<xi:include href="memo/message_area.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+			<bottom><![CDATA[
+<div id="diff">
+	<i class='material-icons close'>close</i>
+	<pre id="display"></pre>
+</div>
+			]]></bottom>
+		</header>
+		<commands>
+			<command name="java">
+				<sql>
+					select
+						java_id
+						, title
+						, source
+						, contents
+						, results
+						, to_char(update_date, 'YYYY-MM-DD HH24:MI:SS') as update_date
+						, to_char(insert_date, 'YYYY-MM-DD HH24:MI:SS') as insert_date
+						, encrypted
+						, parent_id
+					from java
+						where java_id = ? and insert_id = ?
+				</sql>
+				<params>
+					<param default="null" name="java_id" datatype="int" value="param.java_id" />
+					<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+				</params>
+			</command>
+			<command name="java_history" multi="true">
+				<sql>
+					select
+						java_history_id
+						, case when encrypted = true then '암호화된 게시물' else title end as title
+						, case when encrypted = true then title else '' end as encrypted_title
+						, source
+						, contents
+						, results
+						, to_char(update_date, 'YYYY-MM-DD HH24:MI:SS') as update_date
+						, encrypted
+					from java_history
+						where java_id = ? and insert_id = ?
+						and autosave = false
+						order by java_history_id desc
+				</sql>
+				<params>
+					<param default="null" name="java_id" datatype="int" value="param.java_id" />
+					<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+				</params>
+			</command>
+			<command name="java_child" multi="true">
+				<sql>
+					select
+						java_id
+						, case when encrypted = true then '암호화된 게시물' else title end as title
+						, case when encrypted = true then title else '' end as encrypted_title
+						, to_char(update_date, 'YYYY-MM-DD HH24:MI:SS') as update_date
+						, encrypted
+						, parent_id
+					from java
+						where parent_id = ?
+							and insert_id = ?
+						order by java_id desc
+				</sql>
+				<params>
+					<param default="null" name="parent_id" datatype="int" value="param.java_id" />
+					<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+				</params>
+			</command>
+		</commands>
+		<layout>
+			<top>
+				<left>
+					<link name="list" label="목록" path="/java/list" icon="list" class="material-icons md-18 list" />
+					<link name="detail" label="목록" path="/java/detail" icon="list" class="material-icons md-18 list">
+						<params>
+							<param name="java_id" type="query" value="parent_id" />
+						</params>
+					</link>
+				</left>
+				<center />
+				<right>
+					<link name="update" label="수정" path="/java/insert"  icon="create" class="material-icons md-18 create">
+						<params>
+							<param name="java_id" type="query" value="java_id" />
+							<param name="parent_id" type="query" value="parent_id" />
+						</params>
+					</link>
+				</right>
+			</top>
+			<middle>
+				<tab name="java" label="Java 실행기">
+					<row>
+						<column label="제목" name="title" colspan="3" />
+					</row>
+					<row>
+						<column label="Import 패키지" name="source" colspan="3" />
+					</row>
+					<row>
+						<column label="내용" name="contents" colspan="4" islabel="false" />
+						<column label="내용" name="contents2" colspan="4" islabel="false" />
+					</row>
+					<row>
+						<column label="실행결과" name="results" colspan="3" />
+					</row>
+					<row>
+						<column label="입력" name="insert_date" />
+						<column label="수정" name="update_date" />
+					</row>
+				</tab>
+				<tab name="java_history" label="변경이력" single="true">
+					<row>
+						<column label="고유번호" name="java_history_id" />
+						<column label="제목" name="title" />
+						<column label="암호화된 제목" name="encrypted_title" />
+						<column label="마지막수정일시" name="update_date" />
+						<column label="암호화" name="encrypted" />
+					</row>
+					<row>
+						<column label="내용" name="contents" colspan="2" islabel="false" />
+						<column label="내용" name="contents2" colspan="2" islabel="false" />
+					</row>
+					<row>
+						<column label="Import 패키지" name="source" colspan="2" islabel="false" />
+					</row>
+					<row>
+						<column label="실행결과" name="results" colspan="2" islabel="false" />
+					</row>
+				</tab>
+				<tab name="java_child" label="추가게시물" single="true">
+					<row>
+						<column label="제목" name="title">
+							<link path="/java/detail">
+								<param name="java_id" type="query" value="java_id" />
+								<param name="parent_id" type="query" value="parent_id" />
+							</link>
+						</column>
+						<column label="암호화된 제목" name="encrypted_title" />
+						<column label="마지막수정일시" name="update_date" />
+					</row>
+				</tab>
+			</middle>
+			<bottom>
+				<left>
+					<link label="삭제" path="/java/delete" method="post" type="submit" msg="정말로 삭제하시겠습니까?" icon="delete_sweep" class="material-icons md-18 delete_sweep">
+						<params>
+							<param name="java_id" type="query" value="java_id" />
+						</params>
+					</link>
+				</left>
+				<right>
+					<link name="insert" label="추가" path="/java/insert" icon="add" class="material-icons md-18 add">
+						<params>
+							<param name="parent_id" type="query" value="java_id" />
+						</params>
+					</link>
+				</right>
+			</bottom>
+			
+		</layout>
+	</query>
+	<query id="autosaved" funcType="detail" label="Java 실행기(${/document/rows/row/title})">
+		<header>
+		</header>
+		<commands>
+			<command name="java_history" multi="true">
+				<sql>
+					select
+						java_history_id
+						, title
+						, parent_id
+<tile cond="${param.java_history_id} isNotEmpty">
+						, source
+						, contents
+						, results
+</tile>
+						, encrypted
+					from java_history
+					where autosave = true
+						and insert_id = ?
+<tile cond="${param.java_id} isEmpty">
+						and java_id is null
+</tile>
+<tile cond="${param.java_id} isNotEmpty">
+						and java_id = ?
+</tile>
+<tile cond="${param.java_history_id} isNotEmpty">
+						and java_history_id = ?
+</tile>
+<tile cond="${param.parent_id} isNotEmpty">
+						and parent_id = ?
+</tile>
+<tile cond="${param.parent_id} isNotEmpty">
+						and parent_id is null
+</tile>
+					order by java_history_id desc
+					limit 1
+				</sql>
+				<params>
+					<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+					<param default="null" name="java_id" datatype="int" value="param.java_id" cond="${param.java_id} isNotEmpty" />
+					<param default="null" name="java_history_id" datatype="int" value="param.java_history_id" cond="${param.java_history_id} isNotEmpty" />
+					<param default="null" name="parent_id" datatype="int" value="param.parent_id" cond="${param.parent_id} isNotEmpty" />
+				</params>
+			</command>
+		</commands>
+		<layout />
+	</query>
+	<query id="delete" funcType="delete" label="Java 삭제">
+		<tables>
+			<table tableName="java" name="java">
+				<column name="java_id" primary="true" value="param.java_id" datatype="int" />
+				<where>
+					<sql>
+						insert_id = ?
+					</sql>
+					<params>
+						<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+					</params>
+				</where>
+			</table>
+			<table tableName="java" name="java_child">
+				<column name="parent_id" foreign="true" value="param.java_id" datatype="int" />
+				<where>
+					<sql>
+						insert_id = ?
+					</sql>
+					<params>
+						<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+					</params>
+				</where>
+			</table>
+			<table tableName="java_history" name="java_history">
+				<column name="java_id" foreign="true" value="param.java_id" datatype="int" />
+				<where>
+					<sql>
+						insert_id = ?
+					</sql>
+					<params>
+						<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+					</params>
+				</where>
+			</table>
+			<table tableName="java_history" name="java_child_history">
+				<column name="parent_id" foreign="true" value="param.java_id" datatype="int" />
+				<where>
+					<sql>
+						insert_id = ?
+					</sql>
+					<params>
+						<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+					</params>
+				</where>
+			</table>
+		</tables>
+		<redirect path="/java/list" />
+	</query>
+	<query id="deleteAutoSave" funcType="delete" label="자동저장 삭제">
+		<tables>
+			<table tableName="java_history" name="java_history">
+				<column name="java_history_id" foreign="true" value="param.java_history_id" datatype="int" />
+				<where>
+					<sql>
+						insert_id = ?
+					</sql>
+					<params>
+						<param name="insert_id" datatype="varchar" value="prop.logined_user" />
+					</params>
+				</where>
+			</table>
+		</tables>
+		<redirect path="/java/list" />
+	</query>
+	<query id="execute" funcType="query" label="Java 코드 실행">
+		<commands>
+			<command name="execute" type="native" class="kr.graha.sample.javaexecutor.JavaExecutorProcessorImpl" />
+		</commands>
+		<redirect path="/java/list" />
+	</query>
+</querys>
+

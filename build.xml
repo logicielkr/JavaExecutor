@@ -1,0 +1,135 @@
+<project name="JavaExecutor" default="package-tar">
+	<property name = "base.dir" value = "." />
+	<property name = "src.dir" value = "${base.dir}/src" />
+	<property name = "build.dir" value = "${base.dir}/bin" />
+	<property name = "app.name" value = "graha-java" />
+	<property name = "app.version" value = "0.9.0.0" />
+	<property name = "tomcat10.dir" value = "${base.dir}/tomcat10"/>
+	<property name = "package.dir" value = "${base.dir}/package" />
+	<presetdef name="javac">
+		<javac includeantruntime="false" />
+	</presetdef>
+	<target name="depends">
+		<mkdir dir="${package.dir}" />
+		<mkdir dir="${build.dir}" />
+	</target>
+	<target name="clean">
+		<delete dir="${package.dir}" />
+		<delete dir="${build.dir}" />
+	</target>
+	<target name="package-war" depends="package">
+		<war destfile="${package.dir}/${app.name}.${app.version}.war" webxml="${base.dir}/WEB-INF/web-tomcat8.xml">
+			<zipfileset dir="${base.dir}/css" includes="**/*.css" prefix="css" />
+			<zipfileset dir="${base.dir}/js" includes="**/*.js" prefix="js" />
+			<zipfileset dir="${base.dir}/WEB-INF" prefix="WEB-INF" includes="**/*.xml, **/*.sql"/>
+			<zipfileset dir="${package.dir}" prefix="WEB-INF/lib" includes="${app.name}.${app.version}.jar" />
+			<zipfileset dir="/opt/java/lib/apache-commons" prefix="WEB-INF/lib" includes="commons-fileupload-1.3.3.jar" />
+			<zipfileset dir="/opt/java/lib/apache-commons" prefix="WEB-INF/lib" includes="commons-io-1.1.jar" />
+			<zipfileset dir="/opt/java/lib/graha" prefix="WEB-INF/lib" includes="graha.0.5.0.6.jar" />
+			<fileset dir="${base.dir}" prefix="META-INF" includes="LICENSE" />
+			<zipfileset dir="${base.dir}" prefix="META-INF" includes="*.md" />
+		</war>
+	</target>
+	<target name="package-zip" depends="package">
+		<zip destfile="${package.dir}/${app.name}.${app.version}.zip">
+			<zipfileset dir="${base.dir}/css" includes="**/*.css" prefix="css" />
+			<zipfileset dir="${base.dir}/js" includes="**/*.js" prefix="js" />
+			<zipfileset dir="${base.dir}/WEB-INF" prefix="WEB-INF" includes="**/*.xml, **/*.sql"/>
+			<zipfileset dir="${package.dir}" prefix="WEB-INF/lib" includes="${app.name}.${app.version}.jar" />
+			<fileset dir="${base.dir}" includes="LICENSE" />
+			<fileset dir="${base.dir}" includes="*.md" />
+		</zip>
+	</target>
+	<target name="package-tar" depends="package">
+		<tar destfile="${package.dir}/${app.name}.${app.version}.tar.gz" compression="gzip">
+			<tarfileset dir="${base.dir}/css" includes="**/*.css" prefix="css" />
+			<tarfileset dir="${base.dir}/js" includes="**/*.js" prefix="js" />
+			<tarfileset dir="${base.dir}/WEB-INF" prefix="WEB-INF" includes="**/*.xml, **/*.sql"/>
+			<zipfileset dir="${package.dir}" prefix="WEB-INF/lib" includes="${app.name}.${app.version}.jar" />
+			<fileset dir="${base.dir}" includes="LICENSE" />
+			<fileset dir="${base.dir}" includes="*.md" />
+		</tar>
+	</target>
+	<target name="package-all" depends="package-war, package-zip, package-tar, package-tomcat10-war, package-tomcat10-zip, package-tomcat10-tar" />
+
+	<path id = "master-classpath">
+		<pathelement path = "${build.dir}"/>
+		<pathelement path = "/opt/java/lib/apache-commons/commons-fileupload-1.3.3.jar" />
+		<pathelement path = "/opt/java/lib/apache-commons/commons-io-1.1.jar" />
+		<pathelement path = "/opt/java/lib/apache-tomcat-7.0.100/catalina.jar" />
+		<pathelement path = "/opt/java/lib/apache-tomcat-7.0.100/servlet-api.jar" />
+		<pathelement path = "/opt/java/lib/graha/graha.0.5.0.6.jar" />
+	</path>
+	<path id = "tomcat10-classpath">
+		<pathelement path = "${build.dir}"/>
+		<pathelement path = "/opt/java/lib/apache-commons/commons-io-1.1.jar" />
+		<pathelement path = "/opt/java/lib/apache-tomcat-10.0.0-M1/catalina.jar" />
+		<pathelement path = "/opt/java/lib/apache-tomcat-10.0.0-M1/servlet-api.jar" />
+		<pathelement path = "/opt/java/lib/apache-tomcat-10.0.0-M1/tomcat-coyote.jar" />
+		<pathelement path = "/opt/java/lib/graha/graha.0.5.0.6-tomcat10.jar" />
+	</path>
+	<target name="compile" depends="depends">
+		<javac destdir = "${build.dir}" deprecation="true" debug="true" debuglevel="lines,vars,source" includeAntRuntime="false" optimize="true" nowarn="off" target="1.7" source="1.7">
+			<src path = "${src.dir}"/>
+			<classpath refid = "master-classpath"/>
+		</javac>
+	</target>
+	<target name="package" depends="compile">
+		<jar destfile="${package.dir}/${app.name}.${app.version}.jar">
+			<fileset dir="${build.dir}" includes="kr/**/*.class"/>
+			<fileset dir="${base.dir}" includes="README.md,LICENSE"/>
+			<fileset dir="${src.dir}" includes="kr/**/*.java"/>
+		</jar>
+	</target>
+	<target name="generate-tomcat10" depends="compile">
+		<java classname="kr.graha.util.Converter" fork="true">
+			<arg value="${base.dir}" />
+			<classpath refid = "master-classpath"/>
+		</java>
+	</target>
+	<target name="compile-tomcat10" depends="generate-tomcat10">
+		<javac destdir = "${tomcat10.dir}" deprecation="true" debug="true" debuglevel="lines,vars,source" includeAntRuntime="false" optimize="true" nowarn="off" target="1.7" source="1.7">
+			<src path = "${tomcat10.dir}"/>
+			<classpath refid = "tomcat10-classpath"/>
+		</javac>
+	</target>
+	<target name="package-tomcat10" depends="compile-tomcat10">
+		<jar destfile="${package.dir}/${app.name}.${app.version}-tomcat10.jar">
+			<fileset dir="${tomcat10.dir}" includes="kr/**/*.class"/>
+			<fileset dir="${base.dir}" includes="README.md,LICENSE"/>
+			<fileset dir="${tomcat10.dir}" includes="kr/**/*.java, kr/**/*.xsl, kr/**/*.xml, kr/**/*.properties"/>
+		</jar>
+	</target>
+	<target name="package-tomcat10-war" depends="package-tomcat10">
+		<war destfile="${package.dir}/${app.name}.${app.version}-tomcat10.war" webxml="${base.dir}/WEB-INF/web-tomcat10.xml">
+			<zipfileset dir="${base.dir}/css" includes="**/*.css" prefix="css" />
+			<zipfileset dir="${base.dir}/js" includes="**/*.js" prefix="js" />
+			<zipfileset dir="${base.dir}/WEB-INF" prefix="WEB-INF" includes="**/*.xml, **/*.sql"/>
+			<zipfileset dir="${package.dir}" prefix="WEB-INF/lib" includes="${app.name}.${app.version}-tomcat10.jar" />
+			<zipfileset dir="/opt/java/lib/apache-commons" prefix="WEB-INF/lib" includes="commons-io-1.1.jar" />
+			<zipfileset dir="/opt/java/lib/graha" prefix="WEB-INF/lib" includes="graha.0.5.0.6-tomcat10.jar" />
+			<fileset dir="${base.dir}" prefix="META-INF" includes="LICENSE" />
+			<zipfileset dir="${base.dir}" prefix="META-INF" includes="*.md"/>
+		</war>
+	</target>
+	<target name="package-tomcat10-zip" depends="package-tomcat10">
+		<zip destfile="${package.dir}/${app.name}.${app.version}-tomcat10.zip">
+			<zipfileset dir="${base.dir}/css" includes="**/*.css" prefix="css" />
+			<zipfileset dir="${base.dir}/js" includes="**/*.js" prefix="js" />
+			<zipfileset dir="${base.dir}/WEB-INF" prefix="WEB-INF" includes="**/*.xml, **/*.sql"/>
+			<zipfileset dir="${package.dir}" prefix="WEB-INF/lib" includes="${app.name}.${app.version}-tomcat10.jar" />
+			<fileset dir="${base.dir}" includes="LICENSE" />
+			<fileset dir="${base.dir}" includes="*.md" />
+		</zip>
+	</target>
+	<target name="package-tomcat10-tar" depends="package-tomcat10">
+		<tar destfile="${package.dir}/${app.name}.${app.version}-tomcat10.tar.gz" compression="gzip">
+			<tarfileset dir="${base.dir}/css" includes="**/*.css" prefix="css" />
+			<tarfileset dir="${base.dir}/js" includes="**/*.js" prefix="js" />
+			<tarfileset dir="${base.dir}/WEB-INF" prefix="WEB-INF" includes="**/*.xml, **/*.sql"/>
+			<zipfileset dir="${package.dir}" prefix="WEB-INF/lib" includes="${app.name}.${app.version}-tomcat10.jar" />
+			<fileset dir="${base.dir}" includes="LICENSE" />
+			<fileset dir="${base.dir}" includes="*.md" />
+		</tar>
+	</target>
+</project>

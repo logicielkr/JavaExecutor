@@ -1,0 +1,69 @@
+table#java td.update_date, 
+table#java th.update_date {
+	width:200px;
+	text-align:center;
+}
+
+table#java th.encrypted_title,
+table#java td.encrypted_title,
+table#java th.encrypted,
+table#java td.encrypted {
+	display:none;
+}
+
+@media only screen and (max-width: 600px) {
+	table#java th.update_date,
+	table#java td.update_date
+	{
+		display:none;
+	}
+	div.nav.bottom {
+		font-size:18px;
+		display: grid;
+		grid-template-columns: 0fr 1fr 0fr;
+	}
+	div.nav.top {
+		font-size:18px;
+		display: grid;
+		grid-template-columns: 0fr 4fr 2fr;
+	}
+	div.nav.top div.center input[type='text'] {
+		width:120px;
+	}
+}
+
+@supports not (display: grid) {
+	@media only screen and (max-width: 600px) {
+		div.nav.bottom div.left,
+		div.nav.bottom div.right
+		{
+			display:none;
+		}
+		div.nav.bottom div.center {
+			width:100%;
+		}
+		div.nav.top div.left {
+			display:none;
+		}
+		div.nav.top div.center {
+			float: left;
+			width: 67%;
+			min-width: 67%;
+			text-align:left;
+			display:block;
+		}
+		div.nav.top div.right {
+			float: right;
+			width: 33%;
+			min-width:33%;
+			text-align:right;
+			display:block;
+		}
+	}
+}
+
+table#java td.title i.security
+{
+	vertical-align: middle;
+	margin-right:5px;
+}
