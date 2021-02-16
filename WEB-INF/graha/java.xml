@@ -535,11 +535,11 @@ isHistoryEncrypted = true;
 						<column label="암호화" name="encrypted" />
 					</row>
 					<row>
-						<column label="내용" name="contents" colspan="2" islabel="false" />
-						<column label="내용" name="contents2" colspan="2" islabel="false" />
+						<column label="Import 패키지" name="source" colspan="2" islabel="false" />
 					</row>
 					<row>
-						<column label="Import 패키지" name="source" colspan="2" islabel="false" />
+						<column label="내용" name="contents" colspan="2" islabel="false" />
+						<column label="내용" name="contents2" colspan="2" islabel="false" />
 					</row>
 					<row>
 						<column label="실행결과" name="results" colspan="2" islabel="false" />
