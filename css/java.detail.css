@@ -50,11 +50,16 @@ table#java_history td.contents2
 }
 
 table#java_history td.contents,
-table#java_history td.source,
 table#java_history td.results
 {
 	white-space:pre-wrap;
 	height: 150px;
+	display:none;
+}
+table#java_history td.source
+{
+	white-space:pre-wrap;
+	height: 50px;
 	display:none;
 }
 table#java_history th {
