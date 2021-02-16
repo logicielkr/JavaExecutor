@@ -110,15 +110,15 @@ $(document).ready(function() {
 					$(this).parent().next().find("td.contents").is(":visible")
 				)
 			) {
-				$(this).parent().next().find("td.contents2").hide();
-				$(this).parent().next().find("td.contents").hide();
-				$(this).parent().next().next().find("td.source").hide();
+				$(this).parent().next().find("td.source").hide();
+				$(this).parent().next().next().find("td.contents2").hide();
+				$(this).parent().next().next().find("td.contents").hide();
 				$(this).parent().next().next().next().find("td.results").hide();
 				$(this).find("i.delete_forever").remove();
 				$(this).find("i.history").remove();
 			} else {
-				$(this).parent().next().find("td.contents").show();
-				$(this).parent().next().next().find("td.source").show();
+				$(this).parent().next().find("td.source").show();
+				$(this).parent().next().next().find("td.contents").show();
 				$(this).parent().next().next().next().find("td.results").show();
 				if($(this).parent().find("td.encrypted").text() == "t") {
 					selectedTitle = $(this);
@@ -225,6 +225,8 @@ function autoSave(target) {
 				obj.params && 
 				obj.params.java_history_id == target.parent().find("td.java_history_id").text()
 			) {
+				target.parent().next().next().next().remove();
+				target.parent().next().next().remove();
 				target.parent().next().remove();
 				target.parent().remove();
 			}
