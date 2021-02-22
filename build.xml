@@ -26,7 +26,7 @@
 			<zipfileset dir="/opt/java/lib/apache-commons" prefix="WEB-INF/lib" includes="commons-fileupload-1.3.3.jar" />
 			<zipfileset dir="/opt/java/lib/apache-commons" prefix="WEB-INF/lib" includes="commons-io-1.1.jar" />
 			<zipfileset dir="/opt/java/lib/graha" prefix="WEB-INF/lib" includes="graha.0.5.0.6.jar" />
-			<fileset dir="${base.dir}" prefix="META-INF" includes="LICENSE" />
+			<zipfileset dir="${base.dir}" prefix="META-INF" includes="LICENSE" />
 			<zipfileset dir="${base.dir}" prefix="META-INF" includes="*.md" />
 		</war>
 	</target>
