@@ -88,7 +88,9 @@ function mark() {
 		hljs.lineNumbersBlock(block);
 	});
 }
-$(document).ready(function() {
+$(window).on("load", function() {
+//$(window).load(function() {
+//$(document).ready(function() {
 	if(isEncrypted || isChildEncrypted || isHistoryEncrypted) {
 		selectedTitle = $("table#java td.title");
 		selectedContents = $("table#java td.contents");
