@@ -219,7 +219,7 @@ function autoSave(target) {
 		enctype: 'multipart/form-data',
 		data: formData,
 		success: function(result){
-			var obj = parse_xml_document(result);
+			var obj = parse_graha_xml_document(result);
 			if(
 				obj && 
 				obj.params && 

@@ -29,7 +29,7 @@ function evalcode2() {
 		enctype: 'multipart/form-data',
 		data: formData,
 		success: function(result) {
-			var obj = parse_xml_document(result);
+			var obj = parse_graha_xml_document(result);
 			if(obj.results.err) {
 				$("form#insert textarea.results").val(obj.results.err);
 			} else if(obj.results.out) {
