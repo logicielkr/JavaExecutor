@@ -104,6 +104,18 @@ div#pwd_area {
 	display:block;
 }
 </xsl:if>
+<xsl:choose>
+<xsl:when test="not(/document/params[@for='data']/parent_id) or /document/params[@for='data']/parent_id = ''">
+div.top div.left form.detail button {
+	display:none;
+}
+</xsl:when>
+<xsl:otherwise>
+div.top div.left form.list button {
+	display:none;
+}
+</xsl:otherwise>
+</xsl:choose>
 			]]></style>
 			<script>
 var global = global || window;
@@ -244,6 +256,11 @@ javaHistoryId = <xsl:value-of select="/document/params[@for='data']/java_history
 			<top>
 				<left>
 					<link name="list" label="목록" path="/java/list" icon="list" class="material-icons md-18 list" />
+					<link name="detail" label="목록" path="/java/detail" icon="list" class="material-icons md-18 list">
+						<params>
+							<param name="java_id" type="param" value="parent_id" />
+						</params>
+					</link>
 				</left>
 				<center />
 				<right>
