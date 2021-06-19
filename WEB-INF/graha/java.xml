@@ -81,6 +81,7 @@ isEncrypted = true;
 					<column label="제목" name="title">
 						<link path="/java/detail">
 							<param name="java_id" type="query" value="java_id" />
+							<param name="page" type="param" value="page" />
 						</link>
 					</column>
 					<column label="마지막수정일시" name="update_date" />
@@ -269,6 +270,7 @@ javaHistoryId = <xsl:value-of select="/document/params[@for='data']/java_history
 							<param name="java_id" type="query" value="java_id" />
 							<param name="parent_id" value="parent_id" />
 							<param name="java_history_id" value="java_history_id" />
+							<param name="page" value="page" />
 						</params>
 					</link>
 				</right>
@@ -311,10 +313,12 @@ javaHistoryId = <xsl:value-of select="/document/params[@for='data']/java_history
 		</layout>
 		<redirect path="/java/detail" cond="${param.parent_id} isEmpty">
 			<param name="java_id" type="query" value="java_id" />
+			<param name="page" type="param" value="page" />
 		</redirect>
 		<redirect path="/java/detail" cond="${param.parent_id} isNotEmpty">
 			 <param name="java_id" type="query" value="java_id" />
 			 <param name="parent_id" type="query" value="parent_id" />
+			 <param name="page" type="param" value="page" />
 		</redirect>
 	</query>
 	<query id="autosave" funcType="insert" label="자동저장" auth="${header.method} equals 'POST'">
@@ -506,10 +510,15 @@ isHistoryEncrypted = true;
 		<layout>
 			<top>
 				<left>
-					<link name="list" label="목록" path="/java/list" icon="list" class="material-icons md-18 list" />
+					<link name="list" label="목록" path="/java/list" icon="list" class="material-icons md-18 list">
+						<params>
+							<param name="page" type="param" value="page" />
+						</params>
+					</link>
 					<link name="detail" label="목록" path="/java/detail" icon="list" class="material-icons md-18 list">
 						<params>
 							<param name="java_id" type="query" value="parent_id" />
+							<param name="page" type="param" value="page" />
 						</params>
 					</link>
 				</left>
@@ -519,6 +528,7 @@ isHistoryEncrypted = true;
 						<params>
 							<param name="java_id" type="query" value="java_id" />
 							<param name="parent_id" type="query" value="parent_id" />
+							<param name="page" type="param" value="page" />
 						</params>
 					</link>
 				</right>
@@ -580,6 +590,7 @@ isHistoryEncrypted = true;
 					<link label="삭제" path="/java/delete" method="post" type="submit" msg="정말로 삭제하시겠습니까?" icon="delete_sweep" class="material-icons md-18 delete_sweep">
 						<params>
 							<param name="java_id" type="query" value="java_id" />
+							<param name="parent_id" type="query" value="parent_id" />
 						</params>
 					</link>
 				</left>
@@ -587,6 +598,7 @@ isHistoryEncrypted = true;
 					<link name="insert" label="추가" path="/java/insert" icon="add" class="material-icons md-18 add">
 						<params>
 							<param name="parent_id" type="query" value="java_id" />
+							<param name="page" type="param" value="page" />
 						</params>
 					</link>
 				</right>
@@ -688,7 +700,10 @@ isHistoryEncrypted = true;
 				</where>
 			</table>
 		</tables>
-		<redirect path="/java/list" />
+		<redirect path="/java/list" cond="${param.parent_id} isEmpty" />
+		<redirect path="/java/detail" cond="${param.parent_id} isNotEmpty">
+			 <param name="java_id" type="param" value="parent_id" />
+		</redirect>
 	</query>
 	<query id="deleteAutoSave" funcType="delete" label="자동저장 삭제">
 		<tables>
