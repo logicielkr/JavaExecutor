@@ -158,8 +158,8 @@ function readyStart() {
 	$("form#insert input[name='encrypted']").click(function() {
 		readyEncrypted();
 	});
-	$("form.list").submit(function(event) {
-		toList();
+	$("form.list").add("form.detail").submit(function(event) {
+		toList(event);
 		event.preventDefault();
 	});
 	$("table#java th.encrypted").addClass("show");
@@ -167,9 +167,9 @@ function readyStart() {
 	$("table#java th.autosave").addClass("show");
 	$("table#java td.autosave").addClass("show");
 }
-function toList() {
+function toList(event) {
 	if(Processing.is()) {
-		setTimeout(function(){ toList(); }, 50);
+		setTimeout(function(){ toList(event); }, 50);
 		return false;
 	}
 	if($("form#insert input.java_history_id").val() != "") {
@@ -189,8 +189,8 @@ function toList() {
 					enctype: 'multipart/form-data',
 					data: formData,
 					success: function(result) {
-						$("form.list").off("submit");
-						$("form.list").submit();
+						$(event.target).off("submit");
+						$(event.target).submit();
 					}
 				}).always(function() {
 					Processing.clear();
@@ -201,8 +201,8 @@ function toList() {
 			}
 		);
 	} else {
-		$("form.list").off("submit");
-		$("form.list").submit();
+		$(event.target).off("submit");
+		$(event.target).submit();
 	}
 }
 function readyEncrypted() {
