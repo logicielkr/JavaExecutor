@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import kr.graha.lib.Processor;
 import kr.graha.lib.Record;
-import kr.graha.lib.LogHelper;
+import kr.graha.helper.LOG;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -170,7 +170,7 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 				}
 			}
 		} catch (Exception e) {
-			logger.severe(LogHelper.toString(e));
+			logger.severe(LOG.toString(e));
 		}
 		
 		File javaFile = new File(request.getServletContext().getRealPath(basePath + "/kr/graha/sample/javaexecutor/" + fileName + ".java"));
@@ -232,7 +232,7 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			baos = null;
 			return new CompileResult(true, result, null);
 		} catch (Exception e) {
-			error = LogHelper.toString(e);
+			error = LOG.toString(e);
 		} finally {
 			if(out != null) {
 					out.close();
@@ -338,7 +338,7 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			if(sw != null) {
 				error = sw.toString();
 			} else {
-				error = LogHelper.toString(e);
+				error = LOG.toString(e);
 			}
 		} finally {
 			if(source != null) {
