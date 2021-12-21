@@ -46,6 +46,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
@@ -170,7 +171,7 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 				}
 			}
 		} catch (Exception e) {
-			logger.severe(LOG.toString(e));
+			if(logger.isLoggable(Level.SEVERE)) { logger.severe(LOG.toString(e)); }
 		}
 		
 		File javaFile = new File(request.getServletContext().getRealPath(basePath + "/kr/graha/sample/javaexecutor/" + fileName + ".java"));
