@@ -39,7 +39,7 @@ $(document).ready(function() {
 });
 function loadMemoHistoryById() {
 	var ext = location.pathname.substring(location.pathname.lastIndexOf(".") + 1);
-	var url = "autosaved.xml"
+	var url = "autosaved.xml";
 	if(javaId != null) {
 		url += "?java_id=" + javaId;
 	}
