@@ -34,8 +34,9 @@ function evalcode2() {
 				$("form#insert textarea.results").val(obj.results.err);
 			} else if(obj.results.out) {
 				$("form#insert textarea.results").val(obj.results.out);
+			} else {
+				$("form#insert textarea.results").val("completed!!!");
 			}
-			
 		}
 	}).always(function() {
 		
