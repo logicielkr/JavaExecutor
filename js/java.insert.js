@@ -24,6 +24,10 @@ Processing.clear = function() {
 	Processing.status = false;
 };
 
+function full_screen() {
+	$("table#java td.contents textarea").height($(window).height() - (2 * $('body').offset().top));
+	$(document).scrollTop(Math.ceil($("table#java td.contents textarea").offset().top) - ($('body').offset().top / 2));
+}
 
 $(document).ready(function() {
 	readyStart();
@@ -36,6 +40,7 @@ $(document).ready(function() {
 	} else if(isEncrypted) {
 		PwdArea.show(initDecrypt);
 	}
+	$("div.nav.top div.center").append("<input type='button' value='전체화면' onclick='full_screen(this)' />");
 });
 function loadMemoHistoryById() {
 	var ext = location.pathname.substring(location.pathname.lastIndexOf(".") + 1);
