@@ -24,7 +24,7 @@
 			<zipfileset dir="${base.dir}/WEB-INF" prefix="WEB-INF" includes="**/*.xml, **/*.sql"/>
 			<zipfileset dir="${package.dir}" prefix="WEB-INF/lib" includes="${app.name}.${app.version}.jar" />
 			<zipfileset dir="/opt/java/lib/apache-commons" prefix="WEB-INF/lib" includes="commons-fileupload-1.3.3.jar" />
-			<zipfileset dir="/opt/java/lib/apache-commons" prefix="WEB-INF/lib" includes="commons-io-1.1.jar" />
+			<zipfileset dir="/opt/java/lib/apache-commons" prefix="WEB-INF/lib" includes="commons-io-2.10.0.jar" />
 			<zipfileset dir="/opt/java/lib/graha" prefix="WEB-INF/lib" includes="graha.0.5.0.6.jar" />
 			<zipfileset dir="${base.dir}" prefix="META-INF" includes="LICENSE" />
 			<zipfileset dir="${base.dir}" prefix="META-INF" includes="*.md" />
@@ -56,7 +56,7 @@
 		<pathelement path = "${build.dir}"/>
 		<pathelement path = "/opt/java/lib/apache-commons/commons-fileupload-1.3.3.jar" />
 		<!--
-		<pathelement path = "/opt/java/lib/apache-commons/commons-io-1.1.jar" />
+		<pathelement path = "/opt/java/lib/apache-commons/commons-io-2.10.0.jar" />
 		-->
 		<pathelement path = "/opt/java/lib/apache-tomcat-7.0.100/catalina.jar" />
 		<pathelement path = "/opt/java/lib/apache-tomcat-7.0.100/servlet-api.jar" />
@@ -65,7 +65,7 @@
 	<path id = "tomcat10-classpath">
 		<pathelement path = "${build.dir}"/>
 		<!--
-		<pathelement path = "/opt/java/lib/apache-commons/commons-io-1.1.jar" />
+		<pathelement path = "/opt/java/lib/apache-commons/commons-io-2.10.0.jar" />
 		-->
 		<pathelement path = "/opt/java/lib/apache-tomcat-10.0.0-M1/catalina.jar" />
 		<pathelement path = "/opt/java/lib/apache-tomcat-10.0.0-M1/servlet-api.jar" />
@@ -111,7 +111,7 @@
 			<zipfileset dir="${base.dir}/WEB-INF" prefix="WEB-INF" includes="**/*.xml, **/*.sql"/>
 			<zipfileset dir="${package.dir}" prefix="WEB-INF/lib" includes="${app.name}.${app.version}-tomcat10.jar" />
 			<!--
-			<zipfileset dir="/opt/java/lib/apache-commons" prefix="WEB-INF/lib" includes="commons-io-1.1.jar" />
+			<zipfileset dir="/opt/java/lib/apache-commons" prefix="WEB-INF/lib" includes="commons-io-2.10.0.jar" />
 			-->
 			<zipfileset dir="/opt/java/lib/graha" prefix="WEB-INF/lib" includes="graha.0.5.0.6-tomcat10.jar" />
 			<zipfileset dir="${base.dir}" prefix="META-INF" includes="LICENSE" />
