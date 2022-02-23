@@ -42,7 +42,7 @@ isEncrypted = true;
 						, case when encrypted = true then title else '' end as encrypted_title
 						, to_char(update_date, 'YYYY-MM-DD HH24:MI:SS') as update_date
 						, encrypted
-					from java
+					from java.java
 					where insert_id = ?
 					and parent_id is null
 <tile cond="${param.search} isNotEmpty">
@@ -51,7 +51,7 @@ isEncrypted = true;
 					order by java_id desc
 				</sql>
 				<sql_cnt>
-					select count(*) from java where insert_id = ? and parent_id is null
+					select count(*) from java.java where insert_id = ? and parent_id is null
 <tile cond="${param.search} isNotEmpty">
 					and (title like '%' || ? || '%' or contents like '%' || ? || '%')
 </tile>
@@ -153,7 +153,7 @@ javaHistoryId = <xsl:value-of select="/document/params[@for='data']/java_history
 		<processors>
 			<processor type="query" after="true" method="POST" cond="${param.java_history_id} isNotEmpty">
 				<sql>
-					delete from java_history where java_history_id = ? and insert_id = ?
+					delete from java.java_history where java_history_id = ? and insert_id = ?
 				</sql>
 				<params>
 					<param name="java_history_id" datatype="int" value="param.java_history_id" default="-1" />
@@ -162,7 +162,7 @@ javaHistoryId = <xsl:value-of select="/document/params[@for='data']/java_history
 			</processor>
 			<processor type="query" before="true" method="POST" cond="${prop.savehistory} equals 'yy'">
 				<sql>
-					insert into java_history (
+					insert into java.java_history (
 						java_history_id,
 						title,
 						source,
@@ -194,12 +194,12 @@ javaHistoryId = <xsl:value-of select="/document/params[@for='data']/java_history
 						update_date,
 						update_id,
 						update_ip
-					from java where java_id = ?
+					from java.java where java_id = ?
 					and (md5(trim(title)) != md5(trim(?)) or md5(trim(source)) != md5(trim(?)) or md5(trim(contents)) != md5(trim(?)))
 					and insert_id = ?
 				</sql>
 				<params>
-					<param name="java_history_id" datatype="int" value="sequence.nextval('java_history$java_history_id')" default="-1" />
+					<param name="java_history_id" datatype="int" value="sequence.nextval('java.java_history$java_history_id')" default="-1" />
 					<param name="java_id" datatype="int" value="param.java_id" default="-1" />
 					<param name="title" datatype="varchar" value="param.title" />
 					<param name="source" datatype="varchar" value="param.source" />
@@ -209,9 +209,9 @@ javaHistoryId = <xsl:value-of select="/document/params[@for='data']/java_history
 			</processor>
 			<processor type="query" before="true" method="GET" cond="${param.java_id} isNotEmpty">
 				<sql>
-					delete from java_history where java_id = ? and insert_id = ?
+					delete from java.java_history where java_id = ? and insert_id = ?
 					and exists (
-						select * from java where java.java_id = ? and java.insert_id = ?
+						select * from java.java where java.java_id = ? and java.insert_id = ?
 						and md5(java.title) = md5(java_history.title)
 						and md5(java.source) = md5(java_history.source)
 						and md5(java.contents) = md5(java_history.contents)
@@ -229,8 +229,8 @@ javaHistoryId = <xsl:value-of select="/document/params[@for='data']/java_history
 			<param name="title" not-null="true" msg="제목은 필수 항목입니다!" />
 		</validation>
 		<tables>
-			<table tableName="java" name="java" label="Java 실행기">
-				<column name="java_id" value="param.java_id" datatype="int" primary="true" insert="sequence.nextval('java$java_id')" />
+			<table tableName="java.java" name="java" label="Java 실행기">
+				<column name="java_id" value="param.java_id" datatype="int" primary="true" insert="sequence.nextval('java.java$java_id')" />
 				<column name="title" value="param.title" datatype="varchar" />
 				<column name="source" value="param.source" datatype="varchar" />
 				<column name="contents" value="param.contents" datatype="varchar" />
@@ -325,8 +325,8 @@ javaHistoryId = <xsl:value-of select="/document/params[@for='data']/java_history
 		<header>
 		</header>
 		<tables>
-			<table tableName="java_history" name="java_history" label="Java 실행기 이력관리">
-				<column name="java_history_id" value="param.java_history_id" datatype="int" primary="true" insert="sequence.nextval('java_history$java_history_id')" />
+			<table tableName="java.java_history" name="java_history" label="Java 실행기 이력관리">
+				<column name="java_history_id" value="param.java_history_id" datatype="int" primary="true" insert="sequence.nextval('java.java_history$java_history_id')" />
 				<column name="title" value="param.title" datatype="varchar" />
 				<column name="source" value="param.source" datatype="varchar" />
 				<column name="contents" value="param.contents" datatype="varchar" />
@@ -458,7 +458,7 @@ isHistoryEncrypted = true;
 						, to_char(insert_date, 'YYYY-MM-DD HH24:MI:SS') as insert_date
 						, encrypted
 						, parent_id
-					from java
+					from java.java
 						where java_id = ? and insert_id = ?
 				</sql>
 				<params>
@@ -477,7 +477,7 @@ isHistoryEncrypted = true;
 						, results
 						, to_char(update_date, 'YYYY-MM-DD HH24:MI:SS') as update_date
 						, encrypted
-					from java_history
+					from java.java_history
 						where java_id = ? and insert_id = ?
 						and autosave = false
 						order by java_history_id desc
@@ -496,7 +496,7 @@ isHistoryEncrypted = true;
 						, to_char(update_date, 'YYYY-MM-DD HH24:MI:SS') as update_date
 						, encrypted
 						, parent_id
-					from java
+					from java.java
 						where parent_id = ?
 							and insert_id = ?
 						order by java_id desc
@@ -622,7 +622,7 @@ isHistoryEncrypted = true;
 						, results
 </tile>
 						, encrypted
-					from java_history
+					from java.java_history
 					where autosave = true
 						and insert_id = ?
 <tile cond="${param.java_id} isEmpty">
@@ -655,7 +655,7 @@ isHistoryEncrypted = true;
 	</query>
 	<query id="delete" funcType="delete" label="Java 삭제">
 		<tables>
-			<table tableName="java" name="java">
+			<table tableName="java.java" name="java">
 				<column name="java_id" primary="true" value="param.java_id" datatype="int" />
 				<where>
 					<sql>
@@ -666,7 +666,7 @@ isHistoryEncrypted = true;
 					</params>
 				</where>
 			</table>
-			<table tableName="java" name="java_child">
+			<table tableName="java.java" name="java_child">
 				<column name="parent_id" foreign="true" value="param.java_id" datatype="int" />
 				<where>
 					<sql>
@@ -677,7 +677,7 @@ isHistoryEncrypted = true;
 					</params>
 				</where>
 			</table>
-			<table tableName="java_history" name="java_history">
+			<table tableName="java.java_history" name="java_history">
 				<column name="java_id" foreign="true" value="param.java_id" datatype="int" />
 				<where>
 					<sql>
@@ -688,7 +688,7 @@ isHistoryEncrypted = true;
 					</params>
 				</where>
 			</table>
-			<table tableName="java_history" name="java_child_history">
+			<table tableName="java.java_history" name="java_child_history">
 				<column name="parent_id" foreign="true" value="param.java_id" datatype="int" />
 				<where>
 					<sql>
@@ -707,7 +707,7 @@ isHistoryEncrypted = true;
 	</query>
 	<query id="deleteAutoSave" funcType="delete" label="자동저장 삭제">
 		<tables>
-			<table tableName="java_history" name="java_history">
+			<table tableName="java.java_history" name="java_history">
 				<column name="java_history_id" foreign="true" value="param.java_history_id" datatype="int" />
 				<where>
 					<sql>
