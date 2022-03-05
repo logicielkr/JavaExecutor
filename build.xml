@@ -9,6 +9,26 @@
 	<presetdef name="javac">
 		<javac includeantruntime="false" />
 	</presetdef>
+	<path id = "master-classpath">
+		<pathelement path = "${build.dir}"/>
+		<pathelement path = "/opt/java/lib/apache-commons/commons-fileupload-1.3.3.jar" />
+		<!--
+		<pathelement path = "/opt/java/lib/apache-commons/commons-io-2.10.0.jar" />
+		-->
+		<pathelement path = "/opt/java/lib/apache-tomcat-7.0.100/catalina.jar" />
+		<pathelement path = "/opt/java/lib/apache-tomcat-7.0.100/servlet-api.jar" />
+		<pathelement path = "/opt/java/lib/graha/graha.0.5.0.6.jar" />
+	</path>
+	<path id = "tomcat10-classpath">
+		<pathelement path = "${build.dir}"/>
+		<!--
+		<pathelement path = "/opt/java/lib/apache-commons/commons-io-2.10.0.jar" />
+		-->
+		<pathelement path = "/opt/java/lib/apache-tomcat-10.0.0-M1/catalina.jar" />
+		<pathelement path = "/opt/java/lib/apache-tomcat-10.0.0-M1/servlet-api.jar" />
+		<pathelement path = "/opt/java/lib/apache-tomcat-10.0.0-M1/tomcat-coyote.jar" />
+		<pathelement path = "/opt/java/lib/graha/graha.0.5.0.6-tomcat10.jar" />
+	</path>
 	<target name="depends">
 		<mkdir dir="${package.dir}" />
 		<mkdir dir="${build.dir}" />
@@ -52,26 +72,6 @@
 	</target>
 	<target name="package-all" depends="package-war, package-zip, package-tar, package-tomcat10-war, package-tomcat10-zip, package-tomcat10-tar" />
 
-	<path id = "master-classpath">
-		<pathelement path = "${build.dir}"/>
-		<pathelement path = "/opt/java/lib/apache-commons/commons-fileupload-1.3.3.jar" />
-		<!--
-		<pathelement path = "/opt/java/lib/apache-commons/commons-io-2.10.0.jar" />
-		-->
-		<pathelement path = "/opt/java/lib/apache-tomcat-7.0.100/catalina.jar" />
-		<pathelement path = "/opt/java/lib/apache-tomcat-7.0.100/servlet-api.jar" />
-		<pathelement path = "/opt/java/lib/graha/graha.0.5.0.6.jar" />
-	</path>
-	<path id = "tomcat10-classpath">
-		<pathelement path = "${build.dir}"/>
-		<!--
-		<pathelement path = "/opt/java/lib/apache-commons/commons-io-2.10.0.jar" />
-		-->
-		<pathelement path = "/opt/java/lib/apache-tomcat-10.0.0-M1/catalina.jar" />
-		<pathelement path = "/opt/java/lib/apache-tomcat-10.0.0-M1/servlet-api.jar" />
-		<pathelement path = "/opt/java/lib/apache-tomcat-10.0.0-M1/tomcat-coyote.jar" />
-		<pathelement path = "/opt/java/lib/graha/graha.0.5.0.6-tomcat10.jar" />
-	</path>
 	<target name="compile" depends="depends">
 		<javac destdir = "${build.dir}" deprecation="true" debug="true" debuglevel="lines,vars,source" includeAntRuntime="false" optimize="true" nowarn="off" target="1.7" source="1.7">
 			<src path = "${src.dir}"/>
