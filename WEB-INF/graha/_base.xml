@@ -1,12 +1,12 @@
 <querys>
 	<header>
-		<style name="default.default" src="//graha.kr/static-contents/client_lib/graha_base_library/0.5.0.0/default.css" />
-		<style name="default.nav" src="//graha.kr/static-contents/client_lib/graha_base_library/0.5.0.0/default.nav.css" />
-		<style name="nav.small.screen" src="//graha.kr/static-contents/client_lib/graha_base_library/0.5.0.0/nav.small.screen.css" />
-		<style name="input.width" src="//graha.kr/static-contents/client_lib/graha_base_library/0.5.0.0/input.width.css" />
-		<script name="get_message" src="//graha.kr/static-contents/client_lib/graha_base_library/0.5.0.0/get_message.js" />
-		<script name="check_submit" src="//graha.kr/static-contents/client_lib/graha_base_library/0.5.0.0/check_submit.js" />
-		<script name="fn_check" src="//graha.kr/static-contents/client_lib/graha_base_library/0.5.0.0/fn_check.js"/>
-		<script name="ajax_parse_graha_xml_document" src="//graha.kr/static-contents/client_lib/graha_base_library/0.5.0.0/parse_graha_xml_document.js" />
+		<style name="default.default" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/default.css" />
+		<style name="default.nav" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/default.nav.css" />
+		<style name="nav.small.screen" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/nav.small.screen.css" />
+		<style name="input.width" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/input.width.css" />
+		<script name="get_message" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/get_message.js" />
+		<script name="check_submit" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/check_submit.js" />
+		<script name="fn_check" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/fn_check.js"/>
+		<script name="ajax_parse_graha_xml_document" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/parse_graha_xml_document.js" />
 	</header>
 </querys>
