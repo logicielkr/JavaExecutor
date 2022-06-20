@@ -208,7 +208,7 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 			Thread.currentThread().setContextClassLoader(loader);
 			Class<?> c = loader.defineClass("kr.graha.sample.javaexecutor", classFile);
 			
-			Executable p = (Executable)c.newInstance();
+			Executable p = (Executable)c.getDeclaredConstructor().newInstance();
 			p.setRequest(request);
 			p.setResponse(response);
 			p.setParams(params);
