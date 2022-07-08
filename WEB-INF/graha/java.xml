@@ -107,8 +107,11 @@ isEncrypted = true;
 			</bottom>
 		</layout>
 	</query>
-	<query id="insert" funcType="insert" label="Java 실행기">
+	<query id="insert" funcType="insert" label="Java 실행기(추가)">
 		<header>
+			<labels>
+				<label text="Java 실행기(수정)(${/document/rows/row/title})" cond="${param.java_id} exists" />
+			</labels>
 			<style src="../../css/java.insert.css" />
 			<style src="../../css/memo.pwd_area.css" />
 			<style src="../../css/memo.message_area.css" />
