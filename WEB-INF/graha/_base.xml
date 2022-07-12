@@ -8,5 +8,39 @@
 		<script name="check_submit" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/check_submit.js" />
 		<script name="fn_check" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/fn_check.js"/>
 		<script name="ajax_parse_graha_xml_document" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/parse_graha_xml_document.js" />
+		<style name="warningIE">
+div#warningIE {
+	display:none;
+}
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+	div#warningIE {
+		display:block;
+		width:100%;
+		background-color:#FF0000;
+		text-align:center;
+		padding:10px 0px 10px 0px;
+		color:#FFFFFF;
+		font-weight:600;
+		margin-bottom:10px;
+	}
+}
+		</style>
+		<style name="warningIE2" only="ie">
+div#warningIE {
+	display:block;
+	width:100%;
+	background-color:#FF0000;
+	text-align:center;
+	padding:10px 0px 10px 0px;
+	color:#FFFFFF;
+	font-weight:600;
+	margin-bottom:10px;
+}
+		</style>
+		<top><![CDATA[
+<div id="warningIE">
+Microsoft 社는 2022년 6월 15일 Internet Explorer 11의 지원을 종료했습니다.
+</div>
+	]]></top>
 	</header>
 </querys>
