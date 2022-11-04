@@ -47,10 +47,10 @@ isEncrypted = true;
 					and parent_id is null
 <tile cond="${param.search} isNotEmpty">
 					and (
-						title like '%' || ? || '%' or contents like '%' || ? || '%'
+						title like '%' || REGEXP_REPLACE(?, '^\s+|\s+$', '', 'g') || '%' or contents like '%' || REGEXP_REPLACE(?, '^\s+|\s+$', '', 'g') || '%'
 						or exists (
 							select * from java.java as java_child where java_child.parent_id = java.java_id
-							and (title like '%' || ? || '%' or contents like '%' || ? || '%')
+							and (title like '%' || REGEXP_REPLACE(?, '^\s+|\s+$', '', 'g') || '%' or contents like '%' || REGEXP_REPLACE(?, '^\s+|\s+$', '', 'g') || '%')
 						)
 					)
 </tile>
@@ -60,10 +60,10 @@ isEncrypted = true;
 					select count(*) from java.java as java where insert_id = ? and parent_id is null
 <tile cond="${param.search} isNotEmpty">
 					and (
-						title like '%' || ? || '%' or contents like '%' || ? || '%'
+						title like '%' || REGEXP_REPLACE(?, '^\s+|\s+$', '', 'g') || '%' or contents like '%' || REGEXP_REPLACE(?, '^\s+|\s+$', '', 'g') || '%'
 						or exists (
 							select * from java.java as java_child where java_child.parent_id = java.java_id
-							and (title like '%' || ? || '%' or contents like '%' || ? || '%')
+							and (title like '%' || REGEXP_REPLACE(?, '^\s+|\s+$', '', 'g') || '%' or contents like '%' || REGEXP_REPLACE(?, '^\s+|\s+$', '', 'g') || '%')
 						)
 					)
 </tile>
