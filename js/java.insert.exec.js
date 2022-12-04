@@ -20,7 +20,7 @@ function evalcode2() {
 	formData.append("contents", $("form#insert textarea.contents").val());
 	formData.append("source", $("form#insert textarea.source").val());
 	var url = "execute.xml";
-	
+	$("form#insert textarea.results").val("서버로 Java 코드를 전송합니다.");
 	$.ajax({
 		url: url,
 		processData: false,
@@ -33,10 +33,23 @@ function evalcode2() {
 			if(obj.results.err) {
 				$("form#insert textarea.results").val(obj.results.err);
 			} else if(obj.results.out) {
-				$("form#insert textarea.results").val(obj.results.out);
+				if(obj.results.out == "") {
+					$("form#insert textarea.results").val("서버에서 실행을 모두 마쳤습니다.");
+				} else {
+					$("form#insert textarea.results").val(obj.results.out);
+				}
 			} else {
-				$("form#insert textarea.results").val("completed!!!");
+				$("form#insert textarea.results").val("서버에서 실행을 모두 마쳤습니다.");
 			}
+			
+		},
+		error:function(request, status, error){
+			var errorMsg = "";
+			errorMsg += "request.status = " + request.status + "\n";
+			errorMsg += "request.responseText = " + request.responseText + "\n";
+			errorMsg += "status = " + status + "\n";
+			errorMsg += "error = " + error + "\n";
+			$("form#insert textarea.results").val(errorMsg);
 		}
 	}).always(function() {
 		
