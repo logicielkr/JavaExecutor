@@ -104,13 +104,8 @@ $(window).on("load", function() {
 	$("table#java_history td.title").each(function() {
 		$(this).click(function () {
 			if(
-				(
-					$(this).parent().find("td.marked").text() == "t" &&
-					$(this).parent().next().find("td.contents2").is(":visible")
-				) || (
-					$(this).parent().find("td.marked").text() == "" &&
-					$(this).parent().next().find("td.contents").is(":visible")
-				)
+				$(this).parent().next().next().find("td.contents2").is(":visible") ||
+				$(this).parent().next().next().find("td.contents").is(":visible")
 			) {
 				$(this).parent().next().find("td.source").hide();
 				$(this).parent().next().next().find("td.contents2").hide();
