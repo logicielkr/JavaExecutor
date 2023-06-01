@@ -10,7 +10,7 @@
 	<property name = "apache.tomcat.lib.dir" value = "/opt/java/lib/apache-tomcat-7.0.100"/>
 	<property name = "apache.commons.lib.dir" value = "/opt/java/lib/apache-commons"/>
 	<property name = "apache.tomcat10.lib.dir" value = "/opt/java/lib/apache-tomcat-10.0.0-M1"/>
-	<property name = "bouncy.castle.lib.dir" value = "/opt/java/lib/bouncy_castle"/>
+	
 	<property name = "version.file" value = "${graha.lib.dir}/version.property" />
 	<property file = "${version.file}" />
 	<presetdef name="javac">
