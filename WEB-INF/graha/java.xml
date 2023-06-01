@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <querys>
 	<header extends="_base.xml">
-		<jndi name="jdbc/graha_sample" />
-		<prop name="logined_user" value="guest" />
-		<prop name="logined_user" value="${session.user_id}" cond="${session.user_id} isNotEmpty" />
-		<prop name="logined_user" value="${header.remote_user}" cond="${header.remote_user} isNotEmpty" />
 		<style>
 button i {
 	vertical-align: middle;

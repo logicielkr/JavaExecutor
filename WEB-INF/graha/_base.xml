@@ -1,5 +1,9 @@
 <querys>
 	<header>
+		<jndi name="jdbc/graha_sample" />
+		<prop name="logined_user" value="guest" />
+		<prop name="logined_user" value="${session.user_id}" cond="${session.user_id} isNotEmpty" />
+		<prop name="logined_user" value="${header.remote_user}" cond="${header.remote_user} isNotEmpty" />
 		<style name="default.default" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/default.css" />
 		<style name="default.nav" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/default.nav.css" />
 		<style name="nav.small.screen" src="//graha.kr/static-contents/client_lib/graha_base_library/lastest/nav.small.screen.css" />
