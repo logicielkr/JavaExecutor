@@ -3,6 +3,8 @@ function MessageArea() {
 MessageArea.hide = function(callback, cancleCallback) {
 	$("div#message_area").hide();
 	$(window).off("scroll");
+	$(window).off("keypress");
+	$(window).off("keydown");
 };
 MessageArea.alert = function(out, callback) {
 	$("div#message_area").css("top", $(window).scrollTop());
@@ -30,7 +32,7 @@ MessageArea.alert = function(out, callback) {
 				callback(out);
 			}
 			e.preventDefault();
-			$(window).off("keypress");
+//			$(window).off("keypress");
 			return false;
 		}
     });
@@ -62,8 +64,8 @@ MessageArea.confirm = function(msg, callback, cancleCallback) {
 				callback();
 			}
 			e.preventDefault();
-			$(window).off("keypress");
-			$(window).off("keydown");
+//			$(window).off("keypress");
+//			$(window).off("keydown");
 			return false;
 		}
     });
@@ -82,8 +84,8 @@ MessageArea.confirm = function(msg, callback, cancleCallback) {
 				cancleCallback();
 			}
 			e.preventDefault();
-			$(window).off("keypress");
-			$(window).off("keydown");
+//			$(window).off("keypress");
+//			$(window).off("keydown");
 			return false;
 		}
     });

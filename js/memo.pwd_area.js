@@ -4,6 +4,8 @@ function PwdArea() {
 PwdArea.hide = function(callback, cancleCallback) {
 	$("div#pwd_area").hide();
 	$(window).off("scroll");
+	$(window).off("keypress");
+	$(window).off("keydown");
 };
 PwdArea.showCancle = function() {
 	$("div#pwd_area fieldset.pwd input.cancle").show();
@@ -46,7 +48,6 @@ PwdArea.showInternal = function(callback, cancleCallback) {
 };
 PwdArea.attach = function(callback, cancleCallback) {
 	$("div#pwd_area fieldset.pwd input.cancle").off("click");
-	$(window).off("keydown");
 	if(cancleCallback) {
 		PwdArea.showCancle();
 		$("div#pwd_area fieldset.pwd input.cancle").click(function() {
@@ -55,6 +56,7 @@ PwdArea.attach = function(callback, cancleCallback) {
 				cancleCallback();
 			}
 		});
+		$(window).off("keydown");
 		$(window).keydown(function(e) {
 			if(e.keyCode == 27) {
 				PwdArea.hide();
@@ -62,8 +64,8 @@ PwdArea.attach = function(callback, cancleCallback) {
 					cancleCallback();
 				}
 				e.preventDefault();
-				$(window).off("keypress");
-				$(window).off("keydown");
+//				$(window).off("keypress");
+//				$(window).off("keydown");
 				return false;
 			}
 		});
@@ -104,8 +106,8 @@ PwdArea.attach = function(callback, cancleCallback) {
 					callback();
 					PwdArea.save();
 					PwdArea.hide();
-					$(window).off("keypress");
-					$(window).off("keydown");
+//					$(window).off("keypress");
+//					$(window).off("keydown");
 				} catch (error) {
 					PwdArea.alert("!!!패스워드가 정확하지 않습니다!!!")
 				}

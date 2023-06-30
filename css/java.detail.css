@@ -183,8 +183,8 @@ div#diff pre#display span {
 	display:block;
 }
 
-td.hljs-ln-numbers {
-	padding-right:10px;
+.hljs-ln-line.hljs-ln-code {
+	padding-left:10px;
 }
 /*
 td.contents2 h4, 
