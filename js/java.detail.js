@@ -80,10 +80,10 @@ function mark() {
 		smartypants: false,
 		xhtml: false
 	});
-	var text = marked.parse("```java\n" + selectedContents.text() + "\n```");
+	var htmlText = marked.parse("```java\n" + selectedContents.text() + "\n```");
 	selectedContents.hide();
 	selectedContents2.show();
-	selectedContents2.html(text);
+	selectedContents2.html(htmlText);
 	selectedContents2.find("code").each(function(i, block) {
 		hljs.lineNumbersBlock(block);
 	});
