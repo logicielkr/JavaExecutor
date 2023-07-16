@@ -183,8 +183,29 @@ div#diff pre#display span {
 	display:block;
 }
 
+td.hljs-ln-code,
+pre code
+{
+	overflow-wrap: break-word;
+	word-break: break-all;
+	white-space: pre-wrap;
+}
+table.hljs-ln {
+	border-collapse: collapse;
+}
+table.hljs-ln td {
+	padding: 0;
+}
 .hljs-ln-line.hljs-ln-code {
 	padding-left:10px;
+}
+td.hljs-ln-numbers {
+	vertical-align: top;
+	white-space: nowrap;
+	text-align:left;
+}
+div.hljs-ln-n::before {
+	content: attr(data-line-number) " ";
 }
 /*
 td.contents2 h4, 
