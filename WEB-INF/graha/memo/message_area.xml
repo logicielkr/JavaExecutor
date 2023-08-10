@@ -7,8 +7,9 @@
 		<ul class="alert">
 		</ul>
 		<div class="btn">
-			<input type="button" value="확인"  class="confirm" />
-			<input type="button" value="취소"  class="cancle" />
+			<div class="btns"></div>
+			<input type="button" value="확인" class="confirm" />
+			<input type="button" value="취소" class="cancle" />
 		</div>
 	</div>
 </div>
