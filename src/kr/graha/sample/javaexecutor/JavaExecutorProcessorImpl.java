@@ -51,6 +51,7 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Java Executor(그라하(Graha) 전처리기/후처리기)
@@ -204,7 +205,7 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 		String result = null;
 		try {
 			baos = new ByteArrayOutputStream();
-			out = new PrintStream(baos);
+			out = new PrintStream(baos, false, "UTF-8");
 			Thread.currentThread().setContextClassLoader(loader);
 			Class<?> c = loader.defineClass("kr.graha.sample.javaexecutor", classFile);
 			
@@ -226,7 +227,8 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			Object obj = c.newInstance();
 			m.invoke(obj, out);
 */			
-			result = baos.toString();
+			out.flush();
+			result = baos.toString("UTF-8");
 			out.close();
 			out = null;
 			baos.close();
@@ -262,7 +264,7 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 		StringWriter sw = null;
 		String error = null;
 		try {
-			source = new PrintStream(javaFile);
+			source = new PrintStream(javaFile, "UTF-8");
 			source.println("package kr.graha.sample.javaexecutor;");
 			source.println();
 			source.println("import java.sql.Connection;");
@@ -324,10 +326,10 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			
 			sw = new StringWriter();
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, StandardCharsets.UTF_8);
 			Iterable<? extends JavaFileObject> unit = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(javaFile));
 			List<String> option = new ArrayList<String>();
-			option.addAll(Arrays.asList("-classpath", classpath));
+			option.addAll(Arrays.asList("-classpath", classpath, "-encoding", "UTF-8"));
 			System.out.println(classpath);
 			boolean result = compiler.getTask(sw, fileManager, null, option, null, unit).call();
 			fileManager.close();
