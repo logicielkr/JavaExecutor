@@ -12,7 +12,7 @@
   </description>
 	<servlet>
 	    <servlet-name>GrahaServlet</servlet-name>
-	    <servlet-class>kr.graha.next.servlet.NextGeneratorServlet</servlet-class>
+	    <servlet-class>kr.graha.post.servlet.PostGeneratorServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 	    <servlet-name>GrahaServlet</servlet-name>
