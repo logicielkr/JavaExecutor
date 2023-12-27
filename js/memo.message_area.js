@@ -1,11 +1,14 @@
 function MessageArea() {
 }
 MessageArea.hide = function() {
-	$("div#message_area").hide();
-	$("div#message_area div.btn div.btns").hide();
 	$(window).off("scroll");
 	$(window).off("keypress");
 	$(window).off("keydown");
+	$("div#message_area div.btn div.btns").empty();
+	$("div#message_area div.btn div.btns").hide();
+	$("div#message_area input.confirm").off("click");
+	$("div#message_area input.cancle").off("click");
+	$("div#message_area").hide();
 };
 MessageArea.alert = function(out, callback) {
 	$("div#message_area").css("top", $(window).scrollTop());
@@ -41,6 +44,7 @@ MessageArea.alert = function(out, callback) {
     });
 	$("div#message_area ul.alert").show();
 	$("div#message_area").show();
+	$("div#message_area input.confirm").focus();
 };
 MessageArea.confirm = function(msg, callback, cancleCallback) {
 	$("div#message_area").css("top", $(window).scrollTop());
@@ -98,6 +102,7 @@ MessageArea.confirm = function(msg, callback, cancleCallback) {
 	
 	$("div#message_area div.confirm").show();
 	$("div#message_area").show();
+	$("div#message_area input.confirm").focus();
 };
 
 MessageArea.message = function(msg, btns) {
@@ -131,6 +136,71 @@ MessageArea.message = function(msg, btns) {
 			}
 		}
 	}
+	$(window).off("keydown");
+	$(window).keydown(function(e) {
+		if(btns) {
+			for(var i = 0; i < btns.length; i++) {
+				if(btns[i].shortcut && btns[i].callback) {
+					if(Array.isArray(btns[i].shortcut)) {
+						for(var x = 0; x < btns[i].shortcut.length; x++) {
+							if(MessageArea.shortcut(e, btns[i].shortcut[x])) {
+								MessageArea.hide();
+								btns[i].callback();
+								e.preventDefault();
+								return false;
+							}
+						}
+					} else if(MessageArea.shortcut(e, btns[i].shortcut[x])) {
+						MessageArea.hide();
+						btns[i].callback();
+						e.preventDefault();
+						return false;
+					}
+				}
+			}
+		}
+    });
 	$("div#message_area div.btn div.btns").show();
 	$("div#message_area").show();
+};
+MessageArea.shortcut = function(event, item) {
+	if(
+		typeof(item) == "number" &&
+		(
+			event.keyCode == item ||
+			event.keyCode == String.fromCharCode(item).toLowerCase().charCodeAt(0) ||
+			event.keyCode == String.fromCharCode(item).toUpperCase().charCodeAt(0)
+		)
+	) {
+		return true;
+	} else if(
+		typeof(item) == "string" &&
+		item.length == 1 &&
+		(
+			event.keyCode == item.charCodeAt(0) ||
+			event.keyCode == item.toLowerCase().charCodeAt(0) ||
+			event.keyCode == item.toUpperCase().charCodeAt(0)
+		)
+	) {
+		return true;
+	} else if(
+		typeof(item) == "string" &&
+		item.toLowerCase() == "space" &&
+		event.keyCode == 27
+	) {
+		return true;
+	} else if(
+		typeof(item) == "string" &&
+		item.toLowerCase() == "enter" &&
+		event.which == 13
+	) {
+		return true;
+	} else if(
+		typeof(item) == "string" &&
+		item.toLowerCase() == "esc" &&
+		event.which == 32
+	) {
+		return true;
+	}
+	return false;
 };

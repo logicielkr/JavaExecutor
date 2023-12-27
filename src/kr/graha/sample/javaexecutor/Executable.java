@@ -1,7 +1,7 @@
 package kr.graha.sample.javaexecutor;
 
 import java.sql.Connection;
-import kr.graha.lib.Record;
+import kr.graha.post.lib.Record;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintStream;

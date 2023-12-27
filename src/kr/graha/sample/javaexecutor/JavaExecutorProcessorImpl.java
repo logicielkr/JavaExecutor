@@ -22,11 +22,9 @@ package kr.graha.sample.javaexecutor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import kr.graha.lib.Processor;
-import kr.graha.lib.Record;
+import kr.graha.post.interfaces.Processor;
+import kr.graha.post.lib.Record;
 import kr.graha.helper.LOG;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,7 +64,7 @@ import java.nio.charset.StandardCharsets;
 
  * @author HeonJik, KIM
  
- * @see kr.graha.lib.Processor
+ * @see kr.graha.post.interfaces.Processor
  
  * @version 0.9
  * @since 0.9
@@ -90,7 +88,7 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
  * @see jakarta.servlet.http.HttpServletRequest (Apache Tomcat 10 이상)
  * @see javax.servlet.http.HttpServletResponse (Apache Tomcat 10 미만)
  * @see jakarta.servlet.http.HttpServletResponse (Apache Tomcat 10 이상)
- * @see kr.graha.lib.Record 
+ * @see kr.graha.post.lib.Record 
  * @see java.sql.Connection 
  */
 	public void execute(HttpServletRequest request, HttpServletResponse response, Record params, Connection con) {
@@ -101,12 +99,12 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 			dir.mkdirs();
 		}
 		String fileName = "Sample";
-		if(params.hasKey("param.java_id")) {
-			fileName += "" + params.getString("param.java_id");
-		} else if(params.hasKey("param.java_history_id")) {
-			fileName += "H" + params.getString("param.java_history_id");
+		if(params.hasKey(Record.key(Record.PREFIX_TYPE_PARAM, "java_id"))) {
+			fileName += "" + params.getString(Record.key(Record.PREFIX_TYPE_PARAM, "java_id"));
+		} else if(params.hasKey(Record.key(Record.PREFIX_TYPE_PARAM, "java_history_id"))) {
+			fileName += "H" + params.getString(Record.key(Record.PREFIX_TYPE_PARAM, "java_history_id"));
 		} else {
-			params.put("result.err", "java_id is null");
+			params.put(Record.key(Record.PREFIX_TYPE_RESULT, "err"), "java_id is null");
 			return;
 		}
 		boolean tomcat10 = false;
@@ -182,12 +180,12 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 		if(cr.result) {
 			cr = this.execute(classFile, loader, request, response, params, con, tomcat10);
 			if(cr.result) {
-				params.put("result.out", cr.out);
+				params.put(Record.key(Record.PREFIX_TYPE_RESULT, "out"), cr.out);
 			} else {
-				params.put("result.err", cr.error);
+				params.put(Record.key(Record.PREFIX_TYPE_RESULT, "err"), cr.error);
 			}
 		} else {
-			params.put("result.err", cr.error);
+			params.put(Record.key(Record.PREFIX_TYPE_RESULT, "err"), cr.error);
 		}
 	}
 /**
@@ -268,7 +266,7 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			source.println("package kr.graha.sample.javaexecutor;");
 			source.println();
 			source.println("import java.sql.Connection;");
-			source.println("import kr.graha.lib.Record;");
+			source.println("import kr.graha.post.lib.Record;");
 			if(tomcat10) {
 				source.println("import jakarta.servlet.http.HttpServletRequest;");
 				source.println("import jakarta.servlet.http.HttpServletResponse;");
@@ -277,8 +275,8 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 				source.println("import javax.servlet.http.HttpServletResponse;");
 			}
 			source.println("import java.io.PrintStream;");
-			if(params.hasKey("param.source")) {
-				StringTokenizer st = new StringTokenizer(params.getString("param.source"));
+			if(params.hasKey(Record.key(Record.PREFIX_TYPE_PARAM, "source"))) {
+				StringTokenizer st = new StringTokenizer(params.getString(Record.key(Record.PREFIX_TYPE_PARAM, "source")));
 				while (st.hasMoreTokens()) {
 					String line = st.nextToken();
 					if(line == null) {
@@ -316,7 +314,7 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			source.println("	}");
 			source.println("	public void execute(PrintStream out) {");
 			source.println();
-			source.println(params.getString("param.contents"));
+			source.println(params.getString(Record.key(Record.PREFIX_TYPE_PARAM, "contents")));
 			source.println();
 			source.println("	}");
 			source.println("}");
