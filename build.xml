@@ -1,0 +1,4 @@
+<project name="JavaExecutor" default="package-tar">
+	<import file="./build.java.xml" as="java" />
+</project>
+
