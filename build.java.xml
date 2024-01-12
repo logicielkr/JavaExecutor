@@ -1,4 +1,4 @@
-<project name="JavaExecutor" default="package-tar">
+<project name="build.JavaExecutor">
 	<property name = "base.dir" value = "." />
 	<property name = "src.dir" value = "${base.dir}/src" />
 	<property name = "build.dir" value = "${base.dir}/bin" />
