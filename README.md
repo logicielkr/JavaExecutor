@@ -20,7 +20,7 @@ Java 실행기 프로그램은 메모장 프로그램에 실시간 Java 실행 �
 - Apache Tomcat 7.x 이상
 - PostgreSQL 9.1.4 이상
 - JDBC 4.0 이상
-- Graha 0.5.0.6 이상
+- Graha 0.5.1.187 이상
 
 ## 4. 주의사항
 
