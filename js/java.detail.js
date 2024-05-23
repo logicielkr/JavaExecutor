@@ -9,8 +9,8 @@ function initDecrypt() {
 			var decrypted = PwdArea.decrypt(encrypted);
 			selectedTitle.text(decrypted);
 			selectedTitle.prepend("<i class='material-icons security'>security</i>");
-			$(document).attr("title", "메모(" + decrypted + ")");
-			$("h2.title").text("메모(" + decrypted + ")");
+			$(document).attr("title", "Java 실행기(수정)(" + decrypted + ")");
+			$("h2.title").text("Java 실행기(수정)(" + decrypted + ")");
 			encrypted = selectedContents.text();
 			selectedContents.text(PwdArea.decrypt(encrypted));
 		}
