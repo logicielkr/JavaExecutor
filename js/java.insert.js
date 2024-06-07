@@ -250,7 +250,7 @@ function readyAutoSave(gbn) {
 			callAutoSave();
 		});
 		$("table#java td.contents textarea.contents").keypress(function (e) {
-			ctrlenter(e);
+//			ctrlenter(e);
 			callAutoSave();
 		});
 		$("table#java td.title input.title").keypress(function () {
