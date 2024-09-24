@@ -6,28 +6,36 @@
   version="4.0"
   metadata-complete="true">
 
-  <display-name>Java Executor(Graha Sample App)</display-name>
-  <description>
-     Welcome to Java Executor(Graha Sample App)
-  </description>
+	<display-name>Java Executor(Graha Sample App)</display-name>
+	<description>Welcome to Java Executor(Graha Sample App)</description>
 	<servlet>
-	    <servlet-name>GrahaServlet</servlet-name>
-	    <servlet-class>kr.graha.post.servlet.PostGeneratorServlet</servlet-class>
+		<servlet-name>GrahaServlet</servlet-name>
+		<servlet-class>kr.graha.post.servlet.PostGeneratorServlet</servlet-class>
+		<multipart-config>
+			<location>/tmp</location>
+			<max-file-size>-1</max-file-size>
+			<max-request-size>-1</max-request-size>
+			<file-size-threshold>1048576</file-size-threshold>
+		</multipart-config>
+		<init-param>
+			<param-name>FileUploadLibrary</param-name>
+			<param-value>Servlet30FileUpload</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
-	    <servlet-name>GrahaServlet</servlet-name>
-	    <url-pattern>/graha/*</url-pattern>
+		<servlet-name>GrahaServlet</servlet-name>
+		<url-pattern>/graha/*</url-pattern>
 	</servlet-mapping>
 	<servlet>
-	    <servlet-name>GrahaManagerServlet</servlet-name>
-	    <servlet-class>kr.graha.assistant.Manager</servlet-class>
-	    <init-param>
-	        <param-name>jndi</param-name>
-	        <param-value>jdbc/graha_sample</param-value>
-	    </init-param>
+		<servlet-name>GrahaManagerServlet</servlet-name>
+		<servlet-class>kr.graha.assistant.Manager</servlet-class>
+		<init-param>
+			<param-name>jndi</param-name>
+			<param-value>jdbc/graha_sample</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
-	    <servlet-name>GrahaManagerServlet</servlet-name>
-	    <url-pattern>/graha-manager/*</url-pattern>
+		<servlet-name>GrahaManagerServlet</servlet-name>
+		<url-pattern>/graha-manager/*</url-pattern>
 	</servlet-mapping>
 </web-app>
