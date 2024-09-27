@@ -324,6 +324,9 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			
 			sw = new StringWriter();
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+			if(compiler == null) {
+				return new CompileResult(false, "System Java Compilier(javac command) missing!!!!!");
+			}
 			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, StandardCharsets.UTF_8);
 			Iterable<? extends JavaFileObject> unit = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(javaFile));
 			List<String> option = new ArrayList<String>();
@@ -343,8 +346,8 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			}
 		} finally {
 			if(source != null) {
-					source.close();
-					source = null;
+				source.close();
+				source = null;
 			}
 			if(sw != null) {
 				try {
@@ -352,7 +355,6 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 					sw = null;
 				} catch(IOException e) {}
 			}
-			
 		}
 		return new CompileResult(false, error);
 	}
