@@ -47,6 +47,9 @@ public class ECJJavaCompiler {
 			out = new StringWriter();
 			err = new StringWriter();
 			String compileCmd = javaFile.getPath() + " -classpath " + classpath + " -encoding " + "UTF-8";
+			if(STR.valid(params.getString(Record.key(Record.PREFIX_TYPE_PROP, "compiler.ecj.opts")))) {
+				compileCmd += " " + params.getString(Record.key(Record.PREFIX_TYPE_PROP, "compiler.ecj.opts"));
+			}
 			if(STR.valid(params.getString(Record.key(Record.PREFIX_TYPE_PROP, "compiler.ecj.warn")))) {
 				compileCmd += " -warn:" + params.getString(Record.key(Record.PREFIX_TYPE_PROP, "compiler.ecj.warn"));
 			}

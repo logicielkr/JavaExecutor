@@ -742,6 +742,7 @@ isHistoryEncrypted = true;
 <!--
 		<header>
 			<prop name="compiler" value="ecj" />
+			<prop name="compiler.ecj.opts" value="-1.5" />
 			<prop name="compiler.ecj.warn" value="-unchecked,-serial,-raw" />
 		</header>
 -->
