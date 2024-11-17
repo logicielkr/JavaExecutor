@@ -27,29 +27,15 @@ import kr.graha.post.lib.Record;
 import kr.graha.helper.LOG;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
-import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Constructor;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Java Executor(그라하(Graha) 전처리기/후처리기)
@@ -127,16 +113,20 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 			File[] jarFiles = libPath.listFiles();
 			if(jarFiles != null) {
 				for(int i = 0; i < jarFiles.length; i++) {
-					loader.addURL(jarFiles[i]);
-					classpath += ":" + jarFiles[i].getPath();
+					if(jarFiles[i] != null && jarFiles[i].getPath() != null && jarFiles[i].getPath().endsWith(".jar")) {
+						loader.addURL(jarFiles[i]);
+						classpath += ":" + jarFiles[i].getPath();
+					}
 				}
 			}
 			if(extLibDir.exists()) {
 				jarFiles = extLibDir.listFiles();
 				if(jarFiles != null) {
 					for(int i = 0; i < jarFiles.length; i++) {
-						loader.addURL(jarFiles[i]);
-						classpath += ":" + jarFiles[i].getPath();
+						if(jarFiles[i] != null && jarFiles[i].getPath() != null && jarFiles[i].getPath().endsWith(".jar")) {
+							loader.addURL(jarFiles[i]);
+							classpath += ":" + jarFiles[i].getPath();
+						}
 					}
 				}
 			}
@@ -146,8 +136,10 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 					jarFiles = libPath.listFiles();
 					if(jarFiles != null) {
 						for(int i = 0; i < jarFiles.length; i++) {
-							loader.addURL(jarFiles[i]);
-							classpath += ":" + jarFiles[i].getPath();
+							if(jarFiles[i] != null && jarFiles[i].getPath() != null && jarFiles[i].getPath().endsWith(".jar")) {
+								loader.addURL(jarFiles[i]);
+								classpath += ":" + jarFiles[i].getPath();
+							}
 						}
 					}
 				}
@@ -162,8 +154,10 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 						jarFiles = libPath.listFiles();
 						if(jarFiles != null) {
 							for(int i = 0; i < jarFiles.length; i++) {
-								loader.addURL(jarFiles[i]);
-								classpath += ":" + jarFiles[i].getPath();
+								if(jarFiles[i] != null && jarFiles[i].getPath() != null && jarFiles[i].getPath().endsWith(".jar")) {
+									loader.addURL(jarFiles[i]);
+									classpath += ":" + jarFiles[i].getPath();
+								}
 							}
 						}
 					}
@@ -258,8 +252,31 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
  * @see CompileResult
  */
 	public CompileResult compile(File javaFile, Record params, String classpath, boolean tomcat10) {
+		CompileResult compileResult = generate(javaFile, params, tomcat10);
+		if(compileResult.result) {
+			if(params.equals(Record.key(Record.PREFIX_TYPE_PROP, "compiler"), "ecj")) {
+				return this.compileWithECJ(javaFile, params, classpath);
+			}
+			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+			if(compiler == null) {
+				return this.compileWithECJ(javaFile, params, classpath);
+			} else {
+				return this.compileWithSystemJavaCompiler(javaFile, classpath, compiler);
+			}
+		} else {
+			return compileResult;
+		}
+	}
+/**
+ * Java 소스 파일을 만든다.
+ 
+ * @param javaFile Java 소스 파일
+ * @param params Graha 에서 각종 파라미터 정보를 담아서 넘겨준 객체
+  * @return 실행결과
+ * @see CompileResult
+ */
+	private CompileResult generate(File javaFile, Record params, boolean tomcat10) {
 		PrintStream source = null;
-		StringWriter sw = null;
 		String error = null;
 		try {
 			source = new PrintStream(javaFile, "UTF-8");
@@ -321,42 +338,43 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			source.flush();
 			source.close();
 			source = null;
-			
-			sw = new StringWriter();
-			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			if(compiler == null) {
-				return new CompileResult(false, "System Java Compilier(javac command) missing!!!!!");
-			}
-			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, StandardCharsets.UTF_8);
-			Iterable<? extends JavaFileObject> unit = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(javaFile));
-			List<String> option = new ArrayList<String>();
-			option.addAll(Arrays.asList("-classpath", classpath, "-encoding", "UTF-8"));
-			System.out.println(classpath);
-			boolean result = compiler.getTask(sw, fileManager, null, option, null, unit).call();
-			fileManager.close();
-			error = sw.toString();
-			sw.close();
-			sw = null;
-			return new CompileResult(result, error);
+			return new CompileResult(true, error);
 		} catch(Exception e) {
-			if(sw != null) {
-				error = sw.toString();
-			} else {
-				error = LOG.toString(e);
-			}
+			error = LOG.toString(e);
 		} finally {
 			if(source != null) {
 				source.close();
 				source = null;
 			}
-			if(sw != null) {
-				try {
-					sw.close();
-					sw = null;
-				} catch(IOException e) {}
-			}
 		}
 		return new CompileResult(false, error);
+	}
+/**
+ * ECJ 를 이용해서 컴파일한다.
+ 
+ * @param javaFile Java 소스 파일
+ * @param params Graha 에서 각종 파라미터 정보를 담아서 넘겨준 객체
+ * @param classpath 컴파일 할 때 공급할 classpath
+ * @return 실행결과
+ * @see CompileResult
+ */
+	private CompileResult compileWithECJ(File javaFile, Record params, String classpath) {
+		ECJJavaCompiler javaCompiler = new ECJJavaCompiler();
+		return javaCompiler.compile(javaFile, params, classpath);
+	}
+/**
+ * javac 를 이용해서 컴파일한다.
+ 
+ * @param javaFile Java 소스 파일
+ * @param params Graha 에서 각종 파라미터 정보를 담아서 넘겨준 객체
+ * @param classpath 컴파일 할 때 공급할 classpath
+ * @param compiler 컴파일러 (ToolProvider.getSystemJavaCompiler())
+ * @return 실행결과
+ * @see CompileResult
+ */
+	private CompileResult compileWithSystemJavaCompiler(File javaFile, String classpath, JavaCompiler compiler) {
+		SystemJavaCompiler javaCompiler = new SystemJavaCompiler();
+		return javaCompiler.compile(javaFile, classpath, compiler);
 	}
 }
 class CompileResult {

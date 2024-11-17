@@ -739,6 +739,12 @@ isHistoryEncrypted = true;
 		<redirect path="/java/list" />
 	</query>
 	<query id="execute" funcType="query" label="Java 코드 실행">
+<!--
+		<header>
+			<prop name="compiler" value="ecj" />
+			<prop name="compiler.ecj.warn" value="-unchecked,-serial,-raw" />
+		</header>
+-->
 		<commands>
 			<command name="execute" type="native" class="kr.graha.sample.javaexecutor.JavaExecutorProcessorImpl" />
 		</commands>

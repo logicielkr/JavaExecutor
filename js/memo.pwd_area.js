@@ -90,7 +90,7 @@ PwdArea.attach = function(callback, cancleCallback) {
 				PwdArea.save();
 				PwdArea.hide();
 			} catch (error) {
-				PwdArea.alert("!!!패스워드가 정확하지 않습니다!!!")
+				PwdArea.alert("!!!패스워드가 정확하지 않습니다!!!");
 			}
 		} else {
 			PwdArea.alert("!!!패스워드를 입력해 주세요!!!");
@@ -109,7 +109,7 @@ PwdArea.attach = function(callback, cancleCallback) {
 //					$(window).off("keypress");
 //					$(window).off("keydown");
 				} catch (error) {
-					PwdArea.alert("!!!패스워드가 정확하지 않습니다!!!")
+					PwdArea.alert("!!!패스워드가 정확하지 않습니다!!!");
 				}
 			} else {
 				PwdArea.alert("!!!패스워드를 입력해 주세요!!!");
