@@ -52,7 +52,11 @@ public class SystemJavaCompiler {
 			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, StandardCharsets.UTF_8);
 			Iterable<? extends JavaFileObject> unit = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(javaFile));
 			List<String> option = new ArrayList<String>();
-			option.addAll(Arrays.asList("-classpath", classpath, "-encoding", "UTF-8"));
+			if(classpath == null) {
+				option.addAll(Arrays.asList("-encoding", "UTF-8"));
+			} else {
+				option.addAll(Arrays.asList("-classpath", classpath, "-encoding", "UTF-8"));
+			}
 			System.out.println(classpath);
 			boolean result = compiler.getTask(sw, fileManager, null, option, null, unit).call();
 			fileManager.close();

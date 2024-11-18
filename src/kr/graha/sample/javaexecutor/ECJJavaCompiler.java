@@ -46,7 +46,11 @@ public class ECJJavaCompiler {
 		try {
 			out = new StringWriter();
 			err = new StringWriter();
-			String compileCmd = javaFile.getPath() + " -classpath " + classpath + " -encoding " + "UTF-8";
+			String compileCmd = javaFile.getPath();
+			if(classpath != null) {
+				compileCmd += " -classpath " + classpath;
+			}
+			compileCmd += " -encoding " + "UTF-8";
 			if(STR.valid(params.getString(Record.key(Record.PREFIX_TYPE_PROP, "compiler.ecj.opts")))) {
 				compileCmd += " " + params.getString(Record.key(Record.PREFIX_TYPE_PROP, "compiler.ecj.opts"));
 			}

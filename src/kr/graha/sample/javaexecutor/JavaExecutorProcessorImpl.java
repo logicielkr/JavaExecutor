@@ -32,10 +32,10 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.StringTokenizer;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Java Executor(그라하(Graha) 전처리기/후처리기)
@@ -57,7 +57,7 @@ import javax.tools.ToolProvider;
  */
 public class JavaExecutorProcessorImpl extends ClassLoader implements Processor {
 	
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+//	private Logger logger = Logger.getLogger(this.getClass().getName());
 	public JavaExecutorProcessorImpl() {
 		
 	}
@@ -103,7 +103,9 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 				}
 			}
 		}
+		List<String> classPaths = new ArrayList<String>();
 		String classpath = request.getServletContext().getRealPath("/WEB-INF/classes");
+		classPaths.add(classpath);
 		File libPath = new File(request.getServletContext().getRealPath("/WEB-INF/lib"));
 		GrahaClassLoader loader = null;
 		try {
@@ -115,7 +117,8 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 				for(int i = 0; i < jarFiles.length; i++) {
 					if(jarFiles[i] != null && jarFiles[i].getPath() != null && jarFiles[i].getPath().endsWith(".jar")) {
 						loader.addURL(jarFiles[i]);
-						classpath += ":" + jarFiles[i].getPath();
+//						classpath += ":" + jarFiles[i].getPath();
+						classPaths.add(jarFiles[i].getPath());
 					}
 				}
 			}
@@ -125,7 +128,8 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 					for(int i = 0; i < jarFiles.length; i++) {
 						if(jarFiles[i] != null && jarFiles[i].getPath() != null && jarFiles[i].getPath().endsWith(".jar")) {
 							loader.addURL(jarFiles[i]);
-							classpath += ":" + jarFiles[i].getPath();
+//							classpath += ":" + jarFiles[i].getPath();
+							classPaths.add(jarFiles[i].getPath());
 						}
 					}
 				}
@@ -138,7 +142,8 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 						for(int i = 0; i < jarFiles.length; i++) {
 							if(jarFiles[i] != null && jarFiles[i].getPath() != null && jarFiles[i].getPath().endsWith(".jar")) {
 								loader.addURL(jarFiles[i]);
-								classpath += ":" + jarFiles[i].getPath();
+//								classpath += ":" + jarFiles[i].getPath();
+								classPaths.add(jarFiles[i].getPath());
 							}
 						}
 					}
@@ -156,7 +161,8 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 							for(int i = 0; i < jarFiles.length; i++) {
 								if(jarFiles[i] != null && jarFiles[i].getPath() != null && jarFiles[i].getPath().endsWith(".jar")) {
 									loader.addURL(jarFiles[i]);
-									classpath += ":" + jarFiles[i].getPath();
+//									classpath += ":" + jarFiles[i].getPath();
+									classPaths.add(jarFiles[i].getPath());
 								}
 							}
 						}
@@ -164,13 +170,14 @@ public class JavaExecutorProcessorImpl extends ClassLoader implements Processor 
 				}
 			}
 		} catch (Exception e) {
-			if(logger.isLoggable(Level.SEVERE)) { logger.severe(LOG.toString(e)); }
+			LOG.severe(e);
+//			if(logger.isLoggable(Level.SEVERE)) { logger.severe(LOG.toString(e)); }
 		}
 		
 		File javaFile = new File(request.getServletContext().getRealPath(basePath + "/kr/graha/sample/javaexecutor/" + fileName + ".java"));
 		File classFile = new File(request.getServletContext().getRealPath(basePath + "/kr/graha/sample/javaexecutor/" + fileName + ".class"));
 
-		CompileResult cr = this.compile(javaFile, params, classpath, tomcat10);
+		CompileResult cr = this.compile(javaFile, params, classPaths, new File(request.getServletContext().getRealPath(basePath)).getPath(), tomcat10);
 		if(cr.result) {
 			cr = this.execute(classFile, loader, request, response, params, con, tomcat10);
 			if(cr.result) {
@@ -243,17 +250,37 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 		return new CompileResult(false, result, error);
 	}
 /**
+ * List 에 담겨 있는 classpath 를 String 으로 변환한다.
+ 
+ * @param classPaths List 에 담겨 있는 classpath
+ * @return String 으로 변환된 classpath
+ */
+	private String convertClassPath(List classPaths) {
+		if(classPaths != null && classPaths.size() > 0) {
+			String classpath = new String();
+			for(int i = 0; i < classPaths.size(); i++) {
+				if(i > 0) {
+					classpath += ":";
+				}
+				classpath += classPaths.get(i);
+			}
+			return classpath;
+		}
+		return null;
+	}
+/**
  * Java 소스 파일을 컴파일 한다.
  
  * @param javaFile Java 소스 파일
  * @param params Graha 에서 각종 파라미터 정보를 담아서 넘겨준 객체
- * @param classpath 컴파일 할 때 공급할 classpath
+ * @param classPaths 컴파일 할 때 공급할 classpath
  * @return 실행결과
  * @see CompileResult
  */
-	public CompileResult compile(File javaFile, Record params, String classpath, boolean tomcat10) {
-		CompileResult compileResult = generate(javaFile, params, tomcat10);
+	public CompileResult compile(File javaFile, Record params, List<String> classPaths, String baseRealPath, boolean tomcat10) {
+		CompileResult compileResult = generate(javaFile, params, classPaths, baseRealPath, tomcat10);
 		if(compileResult.result) {
+			String classpath = this.convertClassPath(classPaths);
 			if(params.equals(Record.key(Record.PREFIX_TYPE_PROP, "compiler"), "ecj")) {
 				return this.compileWithECJ(javaFile, params, classpath);
 			}
@@ -267,6 +294,20 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			return compileResult;
 		}
 	}
+	private String getJarPath(List<String> classPaths, String prefix) {
+		if(classPaths != null && classPaths.size() > 0) {
+			for(int i = 0; i < classPaths.size(); i++) {
+				String classpath = (String)classPaths.get(i);
+				if(classpath.lastIndexOf("/") >= 0) {
+					String fileName = classpath.substring(classpath.lastIndexOf("/") + 1);
+					if(fileName.startsWith(prefix)) {
+						return classpath;
+					}
+				}
+			}
+		}
+		return null;
+	}
 /**
  * Java 소스 파일을 만든다.
  
@@ -275,13 +316,14 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
   * @return 실행결과
  * @see CompileResult
  */
-	private CompileResult generate(File javaFile, Record params, boolean tomcat10) {
+	private CompileResult generate(File javaFile, Record params, List<String> classPaths, String baseRealPath, boolean tomcat10) {
 		PrintStream source = null;
 		String error = null;
 		try {
 			source = new PrintStream(javaFile, "UTF-8");
 			source.println("package kr.graha.sample.javaexecutor;");
 			source.println();
+			source.println("//import kr.graha.post.interfaces.Processor;");
 			source.println("import java.sql.Connection;");
 			source.println("import kr.graha.post.lib.Record;");
 			if(tomcat10) {
@@ -311,8 +353,10 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 					}
 				}
 			}
+			String className = javaFile.getName().substring(0, javaFile.getName().lastIndexOf("."));
 			source.println();
-			source.println("public class " + javaFile.getName().substring(0, javaFile.getName().lastIndexOf(".")) + " implements kr.graha.sample.javaexecutor.Executable, java.io.Serializable {");
+			source.println("public class " + className + " implements kr.graha.sample.javaexecutor.Executable, java.io.Serializable {");
+			source.println("//public class " + className + " implements Processor {");
 			source.println("	private HttpServletRequest request;");
 			source.println("	private HttpServletResponse response;");
 			source.println("	private Record params;");
@@ -334,6 +378,22 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			source.println(params.getString(Record.key(Record.PREFIX_TYPE_PARAM, "contents")));
 			source.println();
 			source.println("	}");
+			
+			source.println("//java -classpath " + getJarPath(classPaths, "servlet-api.") + ":" + getJarPath(classPaths, "graha.") + ":" + getJarPath(classPaths, "graha-java-executor.") + ":" + baseRealPath + " \\");
+			source.println("//kr.graha.sample.javaexecutor." + className + "");
+			source.println("	public static void main(String[] args) throws Exception {");
+			source.println("		" + className + " executable = new " + className + "();");
+			source.println("		executable.execute(System.out);");
+			source.println("	}");
+			
+			source.println("	public void execute(HttpServletRequest request, HttpServletResponse response, Record params, Connection con) {");
+			source.println("		this.setRequest(request);");
+			source.println("		this.setResponse(response);");
+			source.println("		this.setParams(params);");
+			source.println("		this.setConnection(con);");
+			source.println("		this.execute(System.out);");
+			source.println("	}");
+			
 			source.println("}");
 			source.flush();
 			source.close();
