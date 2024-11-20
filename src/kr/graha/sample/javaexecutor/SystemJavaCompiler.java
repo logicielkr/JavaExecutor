@@ -35,6 +35,13 @@ import java.io.StringWriter;
 /**
  * Java Executor Java Compilier
  * javac 를 이용해서 Java 파일을 컴파일한다.
+ 
+ * .java 파일을 만들지 않고, String 형태의 Java Source 코드를 컴파일 하는 방법은 다음과 같다.
+ *
+ * http://www.java2s.com/Code/Java/JDK-6/CompilingfromMemory.htm
+ * https://stackoverflow.com/questions/12173294/compile-code-fully-in-memory-with-javax-tools-javacompiler
+ * https://stackoverflow.com/questions/21544446/how-do-you-dynamically-compile-and-load-external-java-classes
+ * https://stackoverflow.com/questions/3447359/how-to-provide-an-interface-to-javacompiler-when-compiling-a-source-file-dynamic
 
  * @author HeonJik, KIM
  

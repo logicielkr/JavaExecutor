@@ -33,6 +33,7 @@ Eclipse JDT Compilier (ecj) 로 컴파일을 시도하고,
 <query id="execute" funcType="query" label="Java 코드 실행">
 	<header>
 		<prop name="compiler" value="ecj" />
+		<prop name="compiler.ecj.opts" value="-1.5" />
 		<prop name="compiler.ecj.warn" value="-unchecked,-serial,-raw" />
 	</header>
 	<commands>
@@ -42,9 +43,13 @@ Eclipse JDT Compilier (ecj) 로 컴파일을 시도하고,
 </query>
 ```
 
-단, rt.jar 가 없어진 Java 9 이후에
-Eclipse JDT Compilier (ecj) 버전이 오래되었다면,
-다음과 같은 에러가 발생한다.
+```compiler.ecj.opts``` 는 ```-1.7``` 등 다른 값으로 변경할 수 있겠지만,
+Java 9 이상에서 오래된 ecj 버전을 사용하는 경우 에러가 발생할 수 있고,
+에러에 대해서는 아래의 문제해결 편을 참조하기로 한다.
+
+### 4.1. Eclipse JDT Compilier (ecj) 컴파일러와 관련된 문제해결
+
+### 4.1.1. java.lang.Object 를 찾을 수 없다는 이상한 에러
 
 ```
 1. ERROR in WEB-INF/javaexecutor/classes/kr/graha/sample/javaexecutor/SampleH117.java (at line 1)
@@ -53,18 +58,17 @@ Eclipse JDT Compilier (ecj) 버전이 오래되었다면,
 The type java.lang.Object cannot be resolved. It is indirectly referenced from required .class files
 ```
 
-위와 같은 에러는 Apache Tomcat 7.x 와 8.x 에서 발생할 것으로 예상되는데,
-이는 Apache Tomcat 7.x 와 8.x 에서는 ```lib/``` 디렉토리 아래의 ```ecj-*.jar``` 파일을 사용할 것이기 때문이다.
+위와 같은 에러는 Java 9 이후의 버전과 Apache Tomcat 7.x 혹은 8.x 을 함께 사용할 때 발생할 것으로 예상되는데,
+Java 9 이후의 버전, 예를 들어 Java 11 과 Apache Tomcat 7.x 와 8.x 의 ```lib/``` 디렉토리 아래의 ```ecj-*.jar``` 이 어울리지 않기 때문이다. 
 
 해결방법은 적당한 Eclipse JDT Compilier (ecj) 의 버전(Java 11 의 경우 4.20) 을 ```WEB-INF/lib``` 아래에 넣어 놓으면 된다.
 
+> 원인은 Java 9 이후에 사라진 rt.jar 파일을 찾을 수 없기 때문인 것으로 생각되고,
 > 시도해 본 것은 아니지만,
 > Apache Tomcat 의 [JDTCompiler.java](https://github.com/apache/tomcat/blob/main/java/org/apache/jasper/compiler/JDTCompiler.java) 의 generateClass 메소드의 소스코드를 참고하면
-> 조금더 우아하게 해결할 수 있는 방법이 있을 것으로 생각되지만, 이런 방법은 일단 보류하기로 한다.
+> 조금더 우아하게 해결할 수 있는 방법이 있을 것으로 생각되지만, 이 프로그램에 적용하는 것은 하지 않기로 한다.
 
-### 4.1. Eclipse JDT Compilier (ecj) 컴파일러와 관련된 문제해결
-
-### 4.1.1. java.lang.UnsupportedClassVersionError
+### 4.1.2. java.lang.UnsupportedClassVersionError
 
 ```
 java.lang.UnsupportedClassVersionError: org/eclipse/jdt/core/compiler/batch/BatchCompiler has been compiled by a more recent version of the Java Runtime (class file version 61.0), this version of the Java Runtime only recognizes class file versions up to 55.0 (unable to load class [org.eclipse.jdt.core.compiler.batch.BatchCompiler])
@@ -72,7 +76,7 @@ java.lang.UnsupportedClassVersionError: org/eclipse/jdt/core/compiler/batch/Batc
 
 Java 11 에서 ecj-4.33.jar 등 Java 11 이 지원하지 않는 버전을 사용한 경우에 발생하고, ecj-4.20.jar 등 Java 11 을 지원하는 버전으로 교체한다.
 
-### 4.1.2. org.eclipse.jdt.internal.compiler.apt.dispatch.BatchAnnotationProcessorManager 을 찾을 수 없다는 에러
+### 4.1.3. org.eclipse.jdt.internal.compiler.apt.dispatch.BatchAnnotationProcessorManager 을 찾을 수 없다는 에러
 
 ```
 Unable to load annotation processing manager org.eclipse.jdt.internal.compiler.apt.dispatch.BatchAnnotationProcessorManager from classpath.
@@ -88,24 +92,31 @@ Unable to load annotation processing manager org.eclipse.jdt.internal.compiler.a
 
 해결방법은 적당한 Eclipse JDT Compilier (ecj) 의 버전(Java 11 의 경우 4.20) 을 ```WEB-INF/lib``` 아래에 넣거나 "-1.5" 로 변경한다.
 
-### 4.1.2. ```for each``` 구문을 사용 할 수 없다는 에러
+### 4.1.4. Java 1.5 부터 지원하는 구문과 관련된 컴파일 옵션과 관련된 에러
 
 ```
-1. ERROR in Sample162.java (at line 32)
+1. ERROR in WEB-INF/javaexecutor/classes/kr/graha/sample/javaexecutor/Sample162.java (at line 32)
 	for(File f: list) {
 	    ^^^^^^^^^^^^
 Syntax error, 'for each' statements are only available if source level is 1.5 or greater
 ```
 
-이 에러는 eclipse-jdt-core-3.16.0.jar 버전을 사용할 때 발생하는데,
+```
+1. ERROR in WEB-INF/javaexecutor/classes/kr/graha/sample/javaexecutor/SampleH78.java (at line 29)
+	out.println(Arrays.asList("-encoding", "UTF-8"));
+	                   ^^^^^^
+The method asList(T[]) in the type Arrays is not applicable for the arguments (String, String)
+```
+
+위와 같은 에러들은 eclipse-jdt-core-3.16.0.jar, ecj-4.6.3.jar, ecj-4.4.2.jar 등 오래된 버전을 사용할 때 발생하는데,
 java.xml 의 ```<query id="execute"> / <header>``` 아래에 다음과 같은 내용의 추가한다.
 
 ```
 <prop name="compiler.ecj.opts" value="-1.5" />
 ```
 
-"-1.5" 보다 큰 값, 예를 들어 "-1.6", "-1.7", "-1.8", "-1.9" 같은 값들을 사용하려면
-Eclipse JDT Compilier (ecj) 의 버전(Java 11 의 경우 4.20) 을 ```WEB-INF/lib``` 아래에 넣어야 한다.
+Java 8 에서는 "-1.5" 보다 큰 값, 예를 들어 "-1.6", "-1.7", "-1.8", "-1.9" 같은 값들도 사용할 수 있는데 반해,
+Java 9 부터는 Eclipse JDT Compilier (ecj) 의 버전(Java 11 의 경우 4.20) 을 ```WEB-INF/lib``` 아래에 넣어야 한다.
 
 ## 5. 주의사항
 
