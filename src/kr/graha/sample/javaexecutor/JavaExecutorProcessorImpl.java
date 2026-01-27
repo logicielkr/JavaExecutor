@@ -373,11 +373,6 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			source.println("	public void setConnection(Connection con) {");
 			source.println("		this.con = con;");
 			source.println("	}");
-			source.println("	public void execute(PrintStream out) {");
-			source.println();
-			source.println(params.getString(Record.key(Record.PREFIX_TYPE_PARAM, "contents")));
-			source.println();
-			source.println("	}");
 			
 			source.println("//java -classpath " + getJarPath(classPaths, "servlet-api.") + ":" + getJarPath(classPaths, "graha.") + ":" + getJarPath(classPaths, "graha-java-executor.") + ":" + baseRealPath + " \\");
 			source.println("//kr.graha.sample.javaexecutor." + className + "");
@@ -394,6 +389,12 @@ ClassLoader 가 서로 다르기 때문에 서로간에 casting 할 수 없고,
 			source.println("		this.execute(System.out);");
 			source.println("	}");
 			
+			source.println("	public void execute(PrintStream out) {");
+			source.println();
+			source.println(params.getString(Record.key(Record.PREFIX_TYPE_PARAM, "contents")));
+			source.println();
+			source.println("	}");
+
 			source.println("}");
 			source.flush();
 			source.close();

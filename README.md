@@ -58,15 +58,15 @@ Java 9 이상에서 오래된 ecj 버전을 사용하는 경우 에러가 발생
 The type java.lang.Object cannot be resolved. It is indirectly referenced from required .class files
 ```
 
-위와 같은 에러는 Java 9 이후의 버전과 Apache Tomcat 7.x 혹은 8.x 을 함께 사용할 때 발생할 것으로 예상되는데,
-Java 9 이후의 버전, 예를 들어 Java 11 과 Apache Tomcat 7.x 와 8.x 의 ```lib/``` 디렉토리 아래의 ```ecj-*.jar``` 이 어울리지 않기 때문이다. 
+위와 같은 에러는 Java 9 이후의 버전(예를 들어 Java 11)과 Apache Tomcat 7.x 혹은 8.x 을 함께 사용할 때 발생할 것으로 예상되는데,
+Apache Tomcat 7.x 와 8.x 의 ```lib/``` 디렉토리 아래의 ```ecj-*.jar``` 는 Java 11 과 어울리지 않기 때문이다. 
 
 해결방법은 적당한 Eclipse JDT Compilier (ecj) 의 버전(Java 11 의 경우 4.20) 을 ```WEB-INF/lib``` 아래에 넣어 놓으면 된다.
 
 > 원인은 Java 9 이후에 사라진 rt.jar 파일을 찾을 수 없기 때문인 것으로 생각되고,
 > 시도해 본 것은 아니지만,
 > Apache Tomcat 의 [JDTCompiler.java](https://github.com/apache/tomcat/blob/main/java/org/apache/jasper/compiler/JDTCompiler.java) 의 generateClass 메소드의 소스코드를 참고하면
-> 조금더 우아하게 해결할 수 있는 방법이 있을 것으로 생각되지만, 이 프로그램에 적용하는 것은 하지 않기로 한다.
+> 조금더 우아하게 해결할 수 있는 방법이 있을 것으로 생각되지만, 적용하지는 않을 것이다.
 
 ### 4.1.2. java.lang.UnsupportedClassVersionError
 
