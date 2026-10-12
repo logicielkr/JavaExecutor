@@ -20,7 +20,7 @@ Java 실행기 프로그램은 메모장 프로그램에 실시간 Java 실행 �
 - Apache Tomcat 7.x 이상
 - PostgreSQL 9.1.4 이상
 - JDBC 4.0 이상
-- Graha 0.5.1.187 이상
+- Graha 0.7.2.2 이상
 - javac (JVM) 혹은 Eclipse JDT Compilier (ecj) 컴파일러
 
 ## 4. Eclipse JDT Compilier (ecj) 컴파일러 사용에 대해서

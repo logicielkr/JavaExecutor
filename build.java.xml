@@ -3,7 +3,7 @@
 	<property name = "src.dir" value = "${base.dir}/src" />
 	<property name = "build.dir" value = "${base.dir}/bin" />
 	<property name = "app.name" value = "graha-java" />
-	<property name = "app.version" value = "0.9.0.0" />
+	<property name = "app.version" value = "0.9.1.0" />
 	<property name = "tomcat10.dir" value = "${base.dir}/tomcat10"/>
 	<property name = "package.dir" value = "${base.dir}/package" />
 	<property name = "graha.lib.dir" value = "/opt/java/lib/graha"/>

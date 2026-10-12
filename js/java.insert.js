@@ -40,7 +40,7 @@ $(document).ready(function() {
 	} else if(isEncrypted) {
 		PwdArea.show(initDecrypt);
 	}
-	$("div.nav.top div.center").append("<input type='button' value='전체화면' onclick='full_screen(this)' />");
+	$("div.nav.top div.center").append("<input class='graha' type='button' value='전체화면' onclick='full_screen(this)' />");
 });
 function loadMemoHistoryById() {
 	var ext = location.pathname.substring(location.pathname.lastIndexOf(".") + 1);
@@ -106,6 +106,12 @@ function loadMemoHistory() {
 				if(obj.rows["java_history"][0].parent_id) {
 					$("form#insert input.parent_id").val(obj.rows["java_history"][0].parent_id);
 				}
+				if(obj.rows["java_history"][0].project_id) {
+					$("form#insert input.project_id").val(obj.rows["java_history"][0].project_id);
+				}
+				if(obj.rows["java_history"][0].category) {
+					$("form#insert input.category").val(obj.rows["java_history"][0].category);
+				}
 				if(obj.rows["java_history"][0].title) {
 					$("form#insert input.title").val(obj.rows["java_history"][0].title);
 				}
@@ -132,6 +138,12 @@ function loadMemoHistory() {
 					} else {
 						$("form#insert input.encrypted").prop("checked", false);
 					}
+				}
+				if(obj.rows["java_history"][0].project_id) {
+					$("form#insert input.project_id").val(obj.rows["java_history"][0].project_id);
+				}
+				if(obj.rows["java_history"][0].category) {
+					$("form#insert input.category").val(obj.rows["java_history"][0].category);
 				}
 			}
 			if(isEncrypted) {
@@ -298,6 +310,12 @@ function autoSave(gbn, callback) {
 			formData.append("java_history_id", $("form#insert input.java_history_id").val());
 			formData.append("java_id", $("form#insert input.java_id").val());
 			formData.append("parent_id", $("form#insert input.parent_id").val());
+			if($("form#insert input.category").length > 0) {
+				formData.append("category", $("form#insert input.category").val());
+			}
+			if($("form#insert input.project_id").length > 0) {
+				formData.append("project_id", $("form#insert input.project_id").val());
+			}
 			if(isEncrypted) {
 				var plain = $("form#insert input.title").val();
 				formData.append("title", PwdArea.encrypt(plain));

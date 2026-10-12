@@ -3,7 +3,21 @@ table#java th.update_date {
 	width:200px;
 	text-align:center;
 }
-
+table#java {
+	table-layout: fixed;
+}
+table#java th.project_name, 
+table#java td.project_name,
+table#java th.category, 
+table#java td.category {
+	width:150px;
+}
+table#java td.project_name,
+table#java td.category {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
 table#java th.encrypted_title,
 table#java td.encrypted_title,
 table#java th.encrypted,
@@ -11,12 +25,18 @@ table#java td.encrypted {
 	display:none;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 900px) {
 	table#java th.update_date,
-	table#java td.update_date
+	table#java td.update_date,
+	table#java th.project_name, 
+	table#java td.project_name,
+	table#java th.category, 
+	table#java td.category
 	{
 		display:none;
 	}
+}
+@media only screen and (max-width: 600px) {
 	div.nav.bottom {
 		font-size:18px;
 		display: grid;

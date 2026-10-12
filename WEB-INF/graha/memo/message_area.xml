@@ -1,5 +1,288 @@
 <?xml version="1.0" encoding="UTF-8"?>
-			<bottom><![CDATA[
+<envelop>
+			<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" name="jquery" override="true" preload="true" />
+			<script name="MessageArea" override="true"><![CDATA[
+function MessageArea() {
+}
+MessageArea.init = function() {
+};
+MessageArea.hide = function() {
+	$(window).off("scroll");
+	$(window).off("keypress");
+	$(window).off("keydown");
+	$("div#message_area div.btn div.btns").empty();
+	$("div#message_area div.btn div.btns").hide();
+	$("div#message_area input.confirm").off("click");
+	$("div#message_area input.cancle").off("click");
+	$("div#message_area").hide();
+};
+MessageArea.alert = function(out, callback) {
+	MessageArea.init();
+	$("div#message_area").css("top", $(window).scrollTop());
+	$(window).scroll(function() {
+		$("div#message_area").css("top", $(window).scrollTop());
+	});
+	$("div#message_area div.confirm").hide();
+	$("div#message_area div.btn div.btns").hide();
+	$("div#message_area ul.alert").empty();
+	if(out &amp;&amp; out != null &amp;&amp; Array.isArray(out)) {
+		for(var i = 0; i &lt; out.length; i++) {
+			if(out[i].msg &amp;&amp; out[i].msg != null) {
+				$("div#message_area ul.alert").append("&lt;li>" + out[i].msg + "&lt;/li>")
+			} else {
+				$("div#message_area ul.alert").append("&lt;li>" + out[i] + "&lt;/li>")
+			}
+		}
+	} else {
+		$("div#message_area ul.alert").append("&lt;li>" + out + "&lt;/li>")
+	}
+	$("div#message_area input.cancle").hide();
+	$("div#message_area input.confirm").off("click");
+	$("div#message_area input.cancle").off("click");
+	$("div#message_area input.confirm").click(function() {
+		MessageArea.hide();
+		if(callback) {
+			callback(out);
+		}
+	});
+	$(window).off("keydown");
+	$(window).keydown(function(e) {
+		if(e.which == 13 || e.which == 32 || e.which == 27) {
+			MessageArea.hide();
+			if(callback) {
+				callback(out);
+			}
+			e.preventDefault();
+			return false;
+		}
+    });
+	$("div#message_area ul.alert").show();
+	$("div#message_area").show();
+	$("div#message_area input.confirm").show();
+	$("div#message_area input.confirm").focus();
+};
+MessageArea.confirm = function(msg, callback, cancleCallback) {
+	MessageArea.init();
+	$("div#message_area").css("top", $(window).scrollTop());
+	$(window).scroll(function() {
+		$("div#message_area").css("top", $(window).scrollTop());
+	});
+	$("div#message_area ul.alert").hide();
+	$("div#message_area div.btn div.btns").hide();
+	
+	$("div#message_area div.confirm").empty();
+	$("div#message_area div.confirm").append(msg);
+	
+	$("div#message_area input.confirm").off("click");
+	$("div#message_area input.confirm").click(function() {
+		MessageArea.hide();
+		if(callback) {
+			callback();
+		}
+	});
+	$(window).off("keydown");
+	$(window).keydown(function(e) {
+		if(e.which == 13 || e.which == 32 || e.which == 27) {
+			MessageArea.hide();
+			if(callback) {
+				callback();
+			}
+			e.preventDefault();
+			return false;
+		}
+    });
+	$("div#message_area input.cancle").off("click");
+	$("div#message_area input.cancle").click(function() {
+		MessageArea.hide();
+		if(cancleCallback) {
+			cancleCallback();
+		}
+	});
+	$(window).off("keydown");
+	$(window).keydown(function(e) {
+		if(e.keyCode == 27) {
+			MessageArea.hide();
+			if(cancleCallback) {
+				cancleCallback();
+			}
+			e.preventDefault();
+			return false;
+		}
+    });
+	$("div#message_area input.cancle").show();
+	$("div#message_area input.confirm").show();
+	
+	$("div#message_area div.confirm").show();
+	$("div#message_area").show();
+	$("div#message_area input.confirm").focus();
+};
+
+MessageArea.message = function(msg, btns) {
+	MessageArea.init();
+	$("div#message_area").css("top", $(window).scrollTop());
+	$(window).scroll(function() {
+		$("div#message_area").css("top", $(window).scrollTop());
+	});
+	$("div#message_area ul.alert").hide();
+	
+	$("div#message_area div.confirm").empty();
+	
+	if(msg &amp;&amp; msg != null) {
+		if(Array.isArray(msg)) {
+			$("div#message_area ul.alert").empty();
+			for(var i = 0; i &lt; msg.length; i++) {
+				if(msg[i].msg &amp;&amp; msg[i].msg != null) {
+					$("div#message_area ul.alert").append("&lt;li>" + msg[i].msg + "&lt;/li>")
+				} else {
+					$("div#message_area ul.alert").append("&lt;li>" + msg[i] + "&lt;/li>")
+				}
+			}
+			$("div#message_area ul.alert").show();
+		} else {
+			$("div#message_area div.confirm").append(msg);
+		}
+	}
+	
+	$("div#message_area input.confirm").off("click");
+	$("div#message_area input.cancle").off("click");
+
+	$("div#message_area input.confirm").hide();
+	$("div#message_area input.cancle").hide();
+	$("div#message_area div.btn div.btns").empty();
+	if(btns) {
+		for(var i = 0; i &lt; btns.length; i++) {
+			var result = $("div#message_area div.btn div.btns").append("&lt;input type=\"button\" value=\"" + btns[i].label + "\" class=\"graha " + btns[i].className + "\" />");
+			if(btns[i].callback) {
+				result.children().last().click(
+					{
+						callback: btns[i].callback,
+						parameters: btns[i].parameters
+					},
+					function(event) {
+						event.data.callback(event.data.parameters);
+					}
+				);
+			}
+		}
+	}
+	$(window).off("keydown");
+	if(btns) {
+		$(window).keydown(function(e) {
+			for(var i = 0; i &lt; btns.length; i++) {
+				if(btns[i].shortcut &amp;&amp; btns[i].callback) {
+					if(Array.isArray(btns[i].shortcut)) {
+						for(var x = 0; x &lt; btns[i].shortcut.length; x++) {
+							if(MessageArea.shortcut(e, btns[i].shortcut[x])) {
+								MessageArea.hide();
+								btns[i].callback(btns[i].parameters);
+								e.preventDefault();
+								return false;
+							}
+						}
+					} else if(MessageArea.shortcut(e, btns[i].shortcut[x])) {
+						MessageArea.hide();
+						btns[i].callback(btns[i].parameters);
+						e.preventDefault();
+						return false;
+					}
+				}
+			}
+		});
+    }
+    if(btns) {
+		$("div#message_area div.btn div.btns").show();
+	}
+	$("div#message_area div.confirm").show();
+	$("div#message_area").show();
+	$("div#message_area div.confirm").focus();
+};
+MessageArea.shortcut = function(event, item) {
+	if(
+		typeof(item) == "number" &amp;&amp;
+		(
+			event.keyCode == item ||
+			event.keyCode == String.fromCharCode(item).toLowerCase().charCodeAt(0) ||
+			event.keyCode == String.fromCharCode(item).toUpperCase().charCodeAt(0)
+		)
+	) {
+		return true;
+	} else if(
+		typeof(item) == "string" &amp;&amp;
+		item.length == 1 &amp;&amp;
+		(
+			event.keyCode == item.charCodeAt(0) ||
+			event.keyCode == item.toLowerCase().charCodeAt(0) ||
+			event.keyCode == item.toUpperCase().charCodeAt(0)
+		)
+	) {
+		return true;
+	} else if(
+		typeof(item) == "string" &amp;&amp;
+		item.toLowerCase() == "space" &amp;&amp;
+		event.keyCode == 32
+	) {
+		return true;
+	} else if(
+		typeof(item) == "string" &amp;&amp;
+		item.toLowerCase() == "enter" &amp;&amp;
+		event.which == 13
+	) {
+		return true;
+	} else if(
+		typeof(item) == "string" &amp;&amp;
+		item.toLowerCase() == "esc" &amp;&amp;
+		event.which == 27
+	) {
+		return true;
+	}
+	return false;
+};
+			]]></script>
+			<style name="MessageArea" override="true"><![CDATA[
+div#message_area {
+	background-color: rgba(0, 0, 0, 0.7);
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	display:none;
+	z-index: 1;
+}
+
+div#message_area div.message {
+	margin:0px;
+	padding:0px;
+	position:absolute;
+	top:45%;
+	left:50%;
+	margin-top:-2em;
+	width:310px;
+	margin-left:-155px;
+	line-height:2em;
+	border:none;
+	color:#000;
+	white-space: nowrap;
+	background-color:#FFFFFF;
+	opacity: 1.0;
+	z-index:-1;
+}
+div#message_area div.message div.btn {
+	text-align:center;
+	margin-bottom:20px;
+}
+div#message_area div.message ul.alert {
+	line-height:1.5em;
+	text-wrap:auto;
+	padding-left:30px;
+	padding-right:10px;
+}
+div#message_area div.confirm {
+	margin-top:15px;
+	text-align:center;
+}
+			]]></style>
+			<bottom name="MessageArea" override="true"><![CDATA[
 <div id="message_area">
 	<div class="message">
 		<div class="confirm">
@@ -8,9 +291,338 @@
 		</ul>
 		<div class="btn">
 			<div class="btns"></div>
-			<input type="button" value="확인" class="confirm" />
-			<input type="button" value="취소" class="cancle" />
+			<input type="button" value="확인" class="graha confirm" />
+			<input type="button" value="취소" class="graha cancle" />
 		</div>
 	</div>
 </div>
 			]]></bottom>
+			<script name="LoginArea" override="true"><![CDATA[
+function LoginArea() {
+	
+}
+LoginArea.hide = function(callback, cancleCallback) {
+	$("div#login_area").hide();
+	$(window).off("scroll");
+	$(window).off("keypress");
+	$(window).off("keydown");
+};
+LoginArea.showCancle = function() {
+	$("div#login_area fieldset.login input.cancle").show();
+};
+LoginArea.hideCancle = function() {
+	$("div#login_area fieldset.login input.cancle").hide();
+};
+LoginArea.show = function(options, callback, cancleCallback) {
+	if(options &amp;&amp; options != null) {
+		if(options.idFieldName &amp;&amp; options.idFieldName != null) {
+			$("div#login_area fieldset.login input#id000").attr("name", options.idFieldName);
+		}
+		if(options.idFieldValue &amp;&amp; options.idFieldValue != null) {
+			$("div#login_area fieldset.login input#id000").val(options.idFieldValue);
+		}
+		if(options.pwdFieldName &amp;&amp; options.pwdFieldName != null) {
+			$("div#login_area fieldset.login input#pwd000").attr("name", options.pwdFieldName);
+		}
+		if(options.actionUrl &amp;&amp; options.actionUrl != null) {
+			$("form#LoginFrm").attr("action", options.actionUrl);
+		}
+		if(options.params &amp;&amp; options.params != null) {
+			window.setTimeout(function() {
+				if($("div#login_area fieldset.login").length > 0) {
+					var target = $("div#login_area fieldset.login")[0];
+					for(var i = 0; i &lt; options.params.length; i++) {
+						var hidden = document.createElement("input");
+						hidden.setAttribute("type", "hidden");
+						hidden.setAttribute("name", options.params[i].name);
+						hidden.setAttribute("value", options.params[i].value);
+						target.appendChild(hidden);
+					}
+				}
+			}, 0);
+		}
+	}
+	$("div#login_area").css("top", $(window).scrollTop());
+	$(window).scroll(function() {
+		$("div#login_area").css("top", $(window).scrollTop());
+	});
+	$("div#login_area fieldset.login input.pwd").each(function() {
+		if($("div#login_area fieldset.login input#showpwd").prop("checked")) {	
+			$(this).prop("type", "text");
+		} else {
+			$(this).prop("type", "password");
+		}
+	});
+	if(cancleCallback) {
+		LoginArea.attach(callback, cancleCallback);
+	} else {
+		LoginArea.attach(callback);
+	}
+	$("div#login_area fieldset.login div.alert").hide();
+	$("div#login_area").show();
+	$("div#login_area fieldset.login input#id000").focus();
+};
+LoginArea.login = function(callback, cancleCallback) {
+	var username = $("div#login_area fieldset.login input#id000").val();
+	var password = $("div#login_area fieldset.login input#pwd000").val();
+	if(username == null || username == "") {
+		LoginArea.alert("!!!아이디를 입력해 주세요!!!");
+	} else if(password == null || password == "") {
+		LoginArea.alert("!!!패스워드를 입력해 주세요!!!");
+	} else {
+		try {
+			var form = null;
+			if($("form#LoginFrm").length > 0) {
+				form = $("form#LoginFrm")[0];
+				var formData = new FormData(form);
+				var url = $("form#LoginFrm").attr("action");
+				$.ajax({
+					url: url,
+					processData: false,
+					contentType: false,
+					type: 'POST',
+					enctype: 'multipart/form-data',
+					data: formData,
+					headers: {
+						"x-graha-requested-with": "XMLHttpRequest"
+					}
+				}).then(function(result, textStatus, jqXHR) {
+					if(callback) {
+						callback();
+					}
+					LoginArea.hide();
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					if(jqXHR.status == 401) {
+						var loginErrorMessage = jqXHR.getResponseHeader("x-graha-login-error-message");
+						var loginErrorNextPage = jqXHR.getResponseHeader("x-graha-login-error-next-page");
+						if(loginErrorMessage &amp;&amp; loginErrorMessage != null &amp;&amp; loginErrorMessage != "") {
+							LoginArea.hide();
+							MessageArea.alert(
+								decodeURIComponent(loginErrorMessage),
+								function() {
+									if(loginErrorNextPage &amp;&amp; loginErrorNextPage != null &amp;&amp; loginErrorNextPage != "") {
+										location.href = decodeURIComponent(loginErrorNextPage);
+									} else {
+										location.reload();
+									}
+								}
+							);
+						} else {
+							LoginArea.alert("!!!아이디/패스워드가 정확하지 않습니다!!!");
+						}
+					} else {
+						LoginArea.alert("!!!원인을 알 수 없는 에러가 발생했습니다!!!");
+					}
+				});
+			} else {
+				LoginArea.alert("!!!원인을 알 수 없는 에러가 발생했습니다!!!");
+			}
+		} catch (error) {
+			LoginArea.alert("!!!패스워드가 정확하지 않습니다!!!");
+		}
+	}
+};
+LoginArea.attach = function(callback, cancleCallback) {
+	$("div#login_area fieldset.login input.cancle").off("click");
+	if(cancleCallback) {
+		LoginArea.showCancle();
+		$("div#login_area fieldset.login input.cancle").click(function() {
+			LoginArea.hide();
+			if(cancleCallback &amp;&amp; typeof(cancleCallback) == "function") {
+				cancleCallback();
+			}
+		});
+		$(window).off("keydown");
+		$(window).keydown(function(e) {
+			if(e.keyCode == 27) {
+				LoginArea.hide();
+				if(cancleCallback &amp;&amp; typeof(cancleCallback) == "function") {
+					cancleCallback();
+				}
+				e.preventDefault();
+				return false;
+			}
+		});
+	}
+	$("div#login_area fieldset.login input#showpwd").off("click");
+	$("div#login_area fieldset.login input#showpwd").click(function() {
+		$("div#login_area fieldset.login input.pwd").each(function() {
+			if($("div#login_area fieldset.login input#showpwd").prop("checked")) {	
+				$(this).prop("type", "text");
+			} else {
+				$(this).prop("type", "password");
+			}
+		});
+	});
+	$("div#login_area fieldset.login input.confirm").off("click");
+	$("div#login_area fieldset.login input.confirm").click(function() {
+		LoginArea.login(callback, cancleCallback);
+	});
+	$(window).off("keypress");
+	$(window).keypress(function(e) {
+		if(e.which == 13) {
+			LoginArea.login(callback, cancleCallback);
+			e.preventDefault();
+			return false;
+		}
+    });
+};
+LoginArea.alert = function(msg) {
+	$("div#login_area fieldset.login div.alert").empty();
+	$("div#login_area fieldset.login div.alert").append(msg);
+	$("div#login_area fieldset.login div.alert").show();
+};
+LoginArea.check_login = function(frm) {
+	return false;
+};
+			]]></script>
+			<style name="LoginArea" override="true"><![CDATA[
+div#login_area {
+	background-color: rgba(0, 0, 0, 0.7);
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	display:none;
+	z-index:1;
+}
+
+div#login_area fieldset.login {
+	margin:0px;
+	padding:0px;
+	padding-bottom:15px;
+	padding-top:15px;
+	position:absolute;
+	top:40%;
+	left:50%;
+	margin-top:-2em;
+	width:310px;
+	margin-left:-155px;
+	line-height:2em;
+	border:none;
+	color:#000;
+	white-space: nowrap;
+	background-color:#FFFFFF;
+	opacity: 1.0;
+	z-index:-1;
+}
+div#login_area fieldset.login div {
+	margin-bottom:3px;
+}
+
+div#login_area fieldset.login div span input.id,
+div#login_area fieldset.login div span input.pwd
+{
+	margin:0px;
+	margin-top:0px;
+	padding:0px;
+	margin-left:10px;
+	height:31px;
+	border:#c9ccdb solid 1px;
+	line-height:31px;
+	font-weight:bold;
+	color:#333333;
+	width:199px;
+	background-color:#FFFFFF;
+}
+div#login_area fieldset.login div span input#showpwd,
+div#login_area fieldset.login div span input#savepwd
+{
+	display:inline-block;
+	vertical-align: middle;
+	margin-left:10px;
+}
+div#login_area fieldset.login div.savepwd {
+	display:none;
+}
+div#login_area fieldset.login div label.id,
+div#login_area fieldset.login div label.pwd
+{
+	height:31px;
+	border:#c9ccdb solid 1px;
+	line-height:31px;
+	font-weight:bold;
+	color:#aaaaaa;
+	width:209px;
+	display:none;
+	border:none;
+}
+div#login_area fieldset.login legend {
+	display:none;
+}
+div#login_area fieldset.login input.confirm {
+	margin:0px;
+	padding:0px;
+	position:absolute;
+	top:17px;
+	right:10px;
+	height:69px;
+	width:80px;
+	padding-top:0px;
+	font-size: 14px;
+	background-color:#F3F3F3;
+	border: #c9ccdb solid 1px;
+	padding-right:20px;
+	padding-left:20px;
+	font-size: 14px;
+}
+
+div#login_area fieldset.login input.cancle {
+	margin:0px;
+	padding:0px;
+	position:absolute;
+	top:90px;
+	right:10px;
+	height:31px;
+	width:80px;
+	padding-top:0px;
+	font-size: 14px;
+	background-color:#F3F3F3;
+	border: #c9ccdb solid 1px;
+	padding-right:20px;
+	padding-left:20px;
+	font-size: 14px;
+	display:none;
+}
+
+div#login_area fieldset.login div.alert {
+	margin: auto;
+	text-align: center;
+	color:#FF0000;
+	display:none;
+}
+			]]></style>
+			<bottom name="LoginArea" override="true"><![CDATA[
+<div id="login_area">
+	<form method="post" id="LoginFrm" onsubmit="return LoginArea.check_login(this);">>
+		<fieldset class="login">
+			<legend>로그인</legend>
+			<div class="id000">
+				<label for="id000" id="label_id000" class="graha id">아이디</label>
+				<span>
+					<input type="text" class="graha id" name="id000" id="id000" maxlength="25" value="" title="아이디" />
+				</span>
+			</div>
+			<div class="pwd000">
+				<label for="pwd000" id="label_pwd000" class="graha pwd">패스워드</label>
+				<span>
+					<input type="text" class="graha pwd" name="pwd000" id="pwd000" maxlength="25" value="" title="패스워드" />
+				</span>
+			</div>
+			<input type="button" value="확인" class="graha confirm" />
+			<div class="showpwd">
+				<span>
+					<input type="checkbox" name="showpwd" id="showpwd" class="graha" />
+					<label for="showpwd" id="label_showpwd">암호 표시</label>
+				</span>
+			</div>
+			<input type="button" value="취소" class="graha cancle" />
+			<div class="alert">
+				!!!아이디 혹은 패스워드가 잘못되었습니다!!!
+			</div>
+		</fieldset>
+	</form>
+</div>
+			]]></bottom>
+</envelop>

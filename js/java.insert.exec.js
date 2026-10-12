@@ -75,7 +75,7 @@ function saveAsNew() {
 $(document).ready(function() {
 	if($("form#insert input[name='java_id']").val() != "") {
 //		$("<button type='button' onclick='saveAsNew()'>새이름으로</button>").insertAfter($("button#insert_submit"));
-		$("div.nav.top div.box.center").append($("<button type='button' onclick='saveAsNew()'>새이름으로</button>"));
+		$("div.nav.top div.box.center").append($("<button class='graha' type='button' onclick='saveAsNew()'>새이름으로</button>"));
 	}
 	$("textarea\.contents").keypress(function(e) {
 			ctrlenter(e);

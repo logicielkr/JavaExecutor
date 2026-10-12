@@ -92,6 +92,11 @@ table#java_child th.update_date {
 	width:200px;
 	text-align:center;
 }
+@media only screen and (max-width: 800px) {
+	form.project select.project_id {
+		max-width:200px;
+	}
+}
 @media only screen and (max-width: 600px) {
 	table#java_child td.update_date, 
 	table#java_child th.update_date {
@@ -116,6 +121,9 @@ table#java_child th.update_date {
 	}
 	table#java td.insert_date:after {
 		content: " I";
+	}
+	form.project select.project_id {
+		max-width:130px;
 	}
 }
 
